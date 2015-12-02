@@ -1,0 +1,14 @@
+publisher:
+  technicalSpaceGuid: d6279e22-e597-42be-84a1-8d4f3c904088
+  cfApi: http://api.dev-krb.gotapaas.eu
+  applicationBroker:
+    host: ${vcap.services.marketplace-register-service.applicationBrokerUrl:}
+    username: ${vcap.services.marketplace-register-service.username:}
+    password: ${vcap.services.marketplace-register-service.password:}
+
+spring.oauth2:
+  client:
+    accessTokenUri: ${vcap.services.sso.credentials.tokenUri:}
+    clientId: ${vcap.services.sso.credentials.clientId:}
+    clientSecret: ${vcap.services.sso.credentials.clientSecret:}
+    

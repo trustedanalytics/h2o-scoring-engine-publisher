@@ -13,22 +13,18 @@
  */
 package org.trustedanalytics.h2oscoringengine.publisher.http;
 
-import java.io.IOException;
-
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+public final class JsonHttpCommunication {
+  
+  private JsonHttpCommunication(){}
 
-public class JsonHttpCommunication {
-
-  public static HttpEntity<String> createSimpleJsonRequest() {
+  public static HttpEntity<String> simpleJsonRequest() {
     return new HttpEntity<String>(createJsonHeaders());
   }
 
-  public static HttpEntity<String> createPostRequest(String body) {
+  public static HttpEntity<String> postRequest(String body) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Accept", "application/json");
     headers.add("Content-type", "application/x-www-form-urlencoded");
@@ -36,24 +32,19 @@ public class JsonHttpCommunication {
     return new HttpEntity<String>(body, headers);
   }
 
-  public static HttpHeaders basicAuthHeaders(BasicAuthServerCredentials credentials) {
+  public static HttpEntity<String> basicAuthRequest(String basicAuthToken) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Basic " + basicAuthToken);
+
+    return new HttpEntity<>(headers);
+  }
+  
+  public static HttpHeaders basicAuthJsonHeaders(String basicAuthToken) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-type", "application/json");
-    headers.add("Authorization", "Basic " + credentials.getBasicAuthToken());
-    
+    headers.add("Authorization", "Basic " + basicAuthToken);
+
     return headers;
-  }
-
-  public static String getStringValueFromJson(String json, String valuePath)
-      throws JsonProcessingException, IOException {
-    JsonNode root = getJsonRootNode(json);
-    return root.at(valuePath).asText();
-  }
-
-  public static Integer getIntValueFromJson(String json, String valuePath)
-      throws JsonProcessingException, IOException {
-    JsonNode root = getJsonRootNode(json);
-    return root.at(valuePath).asInt();
   }
 
   private static HttpHeaders createJsonHeaders() {
@@ -62,10 +53,5 @@ public class JsonHttpCommunication {
     headers.add("Content-type", "application/json");
 
     return headers;
-  }
-
-  private static JsonNode getJsonRootNode(String json) throws JsonProcessingException, IOException {
-    ObjectMapper mapper = new ObjectMapper();
-    return mapper.readTree(json);
   }
 }

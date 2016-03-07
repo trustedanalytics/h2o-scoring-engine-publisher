@@ -15,8 +15,6 @@ package org.trustedanalytics.h2oscoringengine.publisher.steps;
 
 import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryEndpoints.APP_IN_SPACE_ENDPOINT_TEMPLATE;
 import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryResponsesJsonPaths.APPS_NUMBER_JSON_PATH;
-import static org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication.createSimpleJsonRequest;
-import static org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication.getIntValueFromJson;
 
 import java.io.IOException;
 
@@ -26,6 +24,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
+import org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication;
+import org.trustedanalytics.h2oscoringengine.publisher.http.JsonDataFetcher;
 
 public class CheckingIfAppExistsStep {
 
@@ -43,11 +43,11 @@ public class CheckingIfAppExistsStep {
   public boolean check(String appName, String spaceGuid) throws EnginePublicationException {
 
     ResponseEntity<String> response = cfRestTemplate.exchange(cfAppInSpaceUrl, HttpMethod.GET,
-        createSimpleJsonRequest(), String.class, spaceGuid, appName);
+        JsonHttpCommunication.simpleJsonRequest(), String.class, spaceGuid, appName);
 
     Integer appsNumber;
     try {
-      appsNumber = getIntValueFromJson(response.getBody(), APPS_NUMBER_JSON_PATH);
+      appsNumber = JsonDataFetcher.getIntValue(response.getBody(), APPS_NUMBER_JSON_PATH);
       LOGGER.debug("Number of found apps: " + appsNumber);
       return appsNumber != 0;
     } catch (IOException e) {

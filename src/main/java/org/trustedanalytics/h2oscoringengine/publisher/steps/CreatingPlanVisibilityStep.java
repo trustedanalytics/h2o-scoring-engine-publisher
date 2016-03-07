@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
 import org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication;
+import org.trustedanalytics.h2oscoringengine.publisher.http.JsonDataFetcher;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,7 +52,7 @@ public class CreatingPlanVisibilityStep {
       String cfPlanVisibilityUrl = cfApiUrl + SERVICE_PLAN_VISIBILITIES_ENDPOINT;
 
       cfRestTemplate.exchange(cfPlanVisibilityUrl, HttpMethod.POST,
-          JsonHttpCommunication.createPostRequest(requestBody), String.class);
+          JsonHttpCommunication.postRequest(requestBody), String.class);
     } catch (IOException e) {
       throw new EnginePublicationException(
           "Unable to set service plan visibility for " + serviceName, e);
@@ -62,9 +63,9 @@ public class CreatingPlanVisibilityStep {
       throws JsonProcessingException, IOException {
     String cfServiceGuidUrl = cfApiUrl + GET_SERVICE_GUID_BY_NAME_ENDPOINT_TEMPLATE;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfServiceGuidUrl, HttpMethod.GET,
-        JsonHttpCommunication.createSimpleJsonRequest(), String.class, serviceName);
+        JsonHttpCommunication.simpleJsonRequest(), String.class, serviceName);
 
-    return JsonHttpCommunication.getStringValueFromJson(response.getBody(), SERVICE_GUID_JSON_PATH);
+    return JsonDataFetcher.getStringValue(response.getBody(), SERVICE_GUID_JSON_PATH);
 
   }
 
@@ -72,10 +73,9 @@ public class CreatingPlanVisibilityStep {
       throws JsonProcessingException, IOException {
     String cfServicePlanUrl = cfApiUrl + GET_SERVICE_PLANS_ENDPOINT_TEMPLATE;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfServicePlanUrl, HttpMethod.GET,
-        JsonHttpCommunication.createSimpleJsonRequest(), String.class, serviceGuid);
+        JsonHttpCommunication.simpleJsonRequest(), String.class, serviceGuid);
 
-    return JsonHttpCommunication.getStringValueFromJson(response.getBody(),
-        FIRST_SERVICE_PLAN_GUID);
+    return JsonDataFetcher.getStringValue(response.getBody(), FIRST_SERVICE_PLAN_GUID);
 
   }
 

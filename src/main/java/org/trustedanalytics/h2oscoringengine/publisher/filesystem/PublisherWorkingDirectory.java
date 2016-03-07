@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 
 public class PublisherWorkingDirectory {
 
+  private static final String SYSTEM_TMP = System.getProperty("java.io.tmpdir");
   private static final String PUBLISHER_PARENT_DIRECTORY_NAME = "h2o-scoring-engine-publisher";
   private static final String H2O_RESOURCES_SUBDIR_NAME = "model";
   private static final String COMPILED_MODEL_SUBDIR_NAME = "classes";
@@ -31,8 +32,8 @@ public class PublisherWorkingDirectory {
   private Path modelJarPath;
   private Path scoringEngineJarDir;
 
-  public PublisherWorkingDirectory(String workingDirectoryName,
-      DirectoryOperations dirOperations) throws IOException {
+  public PublisherWorkingDirectory(String workingDirectoryName, DirectoryOperations dirOperations)
+      throws IOException {
     this.workingDirectoryName = workingDirectoryName;
     this.directoryOperations = dirOperations;
 
@@ -48,8 +49,7 @@ public class PublisherWorkingDirectory {
   }
 
   private void createDirectoryTree() throws IOException {
-    String systemTmp = System.getProperty("java.io.tmpdir");
-    Path workingDir = Paths.get(systemTmp, PUBLISHER_PARENT_DIRECTORY_NAME, workingDirectoryName);
+    Path workingDir = Paths.get(SYSTEM_TMP, PUBLISHER_PARENT_DIRECTORY_NAME, workingDirectoryName);
     directoryOperations.createEmptyDirectoryTree(workingDir);
 
     this.h2oResourcesPath =

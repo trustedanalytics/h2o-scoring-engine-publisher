@@ -16,8 +16,6 @@ package org.trustedanalytics.h2oscoringengine.publisher.steps;
 
 import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryEndpoints.APPS_ENDPOINT;
 import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryResponsesJsonPaths.APP_GUID_JSON_PATH;
-import static org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication.createPostRequest;
-import static org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication.getStringValueFromJson;
 
 import java.io.IOException;
 
@@ -25,6 +23,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
+import org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication;
+import org.trustedanalytics.h2oscoringengine.publisher.http.JsonDataFetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -46,10 +46,10 @@ public class AppRecordCreatingStep {
 
     String cfAppsUrl = cfApiUrl + APPS_ENDPOINT;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfAppsUrl, HttpMethod.POST,
-        createPostRequest(requestBody), String.class);
+        JsonHttpCommunication.postRequest(requestBody), String.class);
 
     try {
-      String appGuid = getStringValueFromJson(response.getBody(), APP_GUID_JSON_PATH);
+      String appGuid = JsonDataFetcher.getStringValue(response.getBody(), APP_GUID_JSON_PATH);
       return new AppRouteCreatingStep(cfRestTemplate, cfApiUrl, appGuid);
     } catch (IOException e) {
       throw new EnginePublicationException("Unable to create CloudFoundry app record:", e);

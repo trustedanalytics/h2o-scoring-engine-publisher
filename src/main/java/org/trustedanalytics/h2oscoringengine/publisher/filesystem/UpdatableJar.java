@@ -90,7 +90,7 @@ public class UpdatableJar implements Closeable {
   public void close() throws IOException {
     jar.close();
   }
-  
+
   private JarEntry createUncompressedJarEntry(Path jarPath) throws IOException {
     File jarFile = jarPath.toFile();
 

@@ -13,6 +13,7 @@
  */
 package org.trustedanalytics.h2oscoringengine.publisher.steps;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
@@ -30,11 +31,15 @@ public class H2oResourcesDownloadingStep {
     Path fileForLib = targetDirectory.resolve("genmodel.jar");
 
     FilesDownloader downloader = new FilesDownloader(h2oCredentials);
-    Path downloadedModelPath =
-        downloader.download(H2O_SERVER_MODEL_PATH_PREFIX + modelName, fileForModelPojo);
-    Path downloadedLibPath = downloader.download(H2O_SERVER_LIB_PATH, fileForLib);
+    try {
+      Path downloadedModelPath =
+          downloader.download(H2O_SERVER_MODEL_PATH_PREFIX + modelName, fileForModelPojo);
+      Path downloadedLibPath = downloader.download(H2O_SERVER_LIB_PATH, fileForLib);
+      return new ModelCompilationStep(downloadedModelPath, downloadedLibPath);
 
-    return new ModelCompilationStep(downloadedModelPath, downloadedLibPath);
+    } catch (IOException e) {
+      throw new EngineBuildingException("Unable to download resources for scoring engine: ", e);
+    }
   }
 
   /**

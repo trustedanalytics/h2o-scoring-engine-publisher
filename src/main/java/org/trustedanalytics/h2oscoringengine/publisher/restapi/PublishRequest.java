@@ -21,14 +21,14 @@ import lombok.Data;
 
 @Data
 public class PublishRequest {
-  
+
   @NotNull
   private BasicAuthServerCredentials h2oCredentials;
-  
+
   @NotNull
   private String modelName;
-  
+
   @NotNull
   private String orgGuid;
-  
+
 }

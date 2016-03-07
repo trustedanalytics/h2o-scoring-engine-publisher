@@ -20,15 +20,12 @@ import java.nio.file.Path;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
 
 /**
  * Downloads files from BasicAuth secured REST server.
@@ -45,8 +42,7 @@ public class FilesDownloader {
     this.basicAuthToken = serverCredentials.getBasicAuthToken();
   }
 
-  public Path download(String resourcePath, Path destinationFilePath)
-      throws EngineBuildingException {
+  public Path download(String resourcePath, Path destinationFilePath) throws IOException {
 
     RestTemplate restTemplate = new RestTemplate();
     restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -54,32 +50,16 @@ public class FilesDownloader {
     String resourceUrl = serverUrl + resourcePath;
 
     LOGGER.info("Downloading " + resourceUrl);
-    
+
     try {
       ResponseEntity<byte[]> response = restTemplate.exchange(resourceUrl, HttpMethod.GET,
-          prepareBasicAuthRequest(), byte[].class);
-      return writeBytes(destinationFilePath, response.getBody());
-      
+          JsonHttpCommunication.basicAuthRequest(basicAuthToken), byte[].class);
+      return Files.write(destinationFilePath, response.getBody());
+
     } catch (HttpClientErrorException e) {
       String errorMessage = prepareErrorMessage(e.getStatusCode(), resourceUrl);
       LOGGER.error(errorMessage);
-      throw new EngineBuildingException(errorMessage);
-    }
-
-  }
-
-  private HttpEntity<String> prepareBasicAuthRequest() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Authorization", "Basic " + basicAuthToken);
-
-    return new HttpEntity<String>(headers);
-  }
-
-  private Path writeBytes(Path destinationFilePath, byte[] bytes) throws EngineBuildingException {
-    try {
-      return Files.write(destinationFilePath, bytes);
-    } catch (IOException e) {
-      throw new EngineBuildingException("Unable to write files " + e);
+      throw new IOException(errorMessage);
     }
   }
 

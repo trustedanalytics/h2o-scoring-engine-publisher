@@ -17,6 +17,8 @@ import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryE
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,6 +31,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class RegisteringInApplicationBrokerStep {
+
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(RegisteringInApplicationBrokerStep.class);
 
   private final String appGuid;
   private final String cfApiUrl;
@@ -43,6 +48,8 @@ public class RegisteringInApplicationBrokerStep {
 
   public CreatingPlanVisibilityStep register(BasicAuthServerCredentials appBrokerCredentials,
       String serviceName, String serviceDescription) {
+
+    LOGGER.info("Registering service " + serviceName + " in application-broker");
 
     String requestBody = prepareAppBrokerJsonRequest(serviceName, serviceDescription);
     HttpHeaders headers =

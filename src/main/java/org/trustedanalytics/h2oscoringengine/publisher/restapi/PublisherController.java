@@ -47,7 +47,7 @@ public class PublisherController {
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "/engine")
   public void publish(@Valid @RequestBody PublishRequest publishRequest)
       throws EnginePublicationException, EngineBuildingException {
-    LOGGER.info(publishRequest.toString());
+    LOGGER.info("Got publish request: " + publishRequest.toString());
     publisher.publish(publishRequest, technicalSpaceGuid);
   }
 

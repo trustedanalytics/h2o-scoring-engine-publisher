@@ -21,6 +21,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +40,8 @@ import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationExceptio
 
 public class AppBitsUploadingStep {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(AppBitsUploadingStep.class);
+
   private final String cfApiUrl;
   private final RestTemplate cfRestTemplate;
   private final String appGuid;
@@ -52,6 +56,8 @@ public class AppBitsUploadingStep {
   public RegisteringInApplicationBrokerStep uploadBits(Path appBits)
       throws EnginePublicationException {
     prepareRestTemplateForMultipartRequest();
+    LOGGER.info("Uploading bits for app " + appGuid + " from " + appBits);
+
     try {
 
       HttpEntity<MultiValueMap<String, Object>> request = prepareMutlipartRequest(appBits);

@@ -21,6 +21,8 @@ import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryR
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -34,6 +36,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class CreatingPlanVisibilityStep {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(CreatingPlanVisibilityStep.class);
+
   private final String cfApiUrl;
   private final RestTemplate cfRestTemplate;
 
@@ -44,6 +48,8 @@ public class CreatingPlanVisibilityStep {
 
   public void addServicePlanVisibility(String orgGuid, String serviceName)
       throws EnginePublicationException {
+    LOGGER.info("Setting plan visibility for " + serviceName + " in " + orgGuid + " organisation");
+
     try {
       String serviceGuid = getServiceGuidByName(serviceName);
       String planGuid = getServicePlanGuid(serviceGuid);

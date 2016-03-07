@@ -42,6 +42,7 @@ public class CheckingIfAppExistsStep {
 
   public boolean check(String appName, String spaceGuid) throws EnginePublicationException {
 
+    LOGGER.info("Checking if app " + appName + " already exists in CloudFoundry");
     ResponseEntity<String> response = cfRestTemplate.exchange(cfAppInSpaceUrl, HttpMethod.GET,
         JsonHttpCommunication.simpleJsonRequest(), String.class, spaceGuid, appName);
 

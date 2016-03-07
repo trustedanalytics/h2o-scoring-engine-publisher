@@ -24,6 +24,8 @@ import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryR
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -36,6 +38,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class AppRouteCreatingStep {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AppRouteCreatingStep.class);
 
   private final RestTemplate cfRestTemplate;
   private final String cfApiUrl;
@@ -50,6 +54,7 @@ public class AppRouteCreatingStep {
   public AppBitsUploadingStep createAppRoute(String spaceGuid, String subdomain)
       throws EnginePublicationException {
 
+    LOGGER.info("Assigning route to app...");
     try {
       String domainGuid = getAvailableDomain();
 
@@ -58,10 +63,13 @@ public class AppRouteCreatingStep {
 
       String routeGuid;
       if (routesNumber > 0) {
+        LOGGER.info("Fetching routes for " + subdomain + " subdomain");
         routeGuid = JsonDataFetcher.getStringValue(appRoutesInfoJson, ROUTE_JSON_PATH);
       } else {
+        LOGGER.info("No route exists. Creating new one.");
         routeGuid = createNewRoute(subdomain, domainGuid, spaceGuid);
       }
+      LOGGER.info("Binding route " + routeGuid + " to app " + appGuid);
       bindRouteToApp(routeGuid, appGuid);
       return new AppBitsUploadingStep(cfApiUrl, cfRestTemplate, appGuid);
     } catch (IOException e) {
@@ -81,6 +89,7 @@ public class AppRouteCreatingStep {
 
   private String getAppRoutesInfo(String appName, String domainGuid) {
     String cfGetRoutesUrl = cfApiUrl + GET_ROUTES_ENDPOINT_TEMPLATE;
+
     ResponseEntity<String> response = cfRestTemplate.exchange(cfGetRoutesUrl, HttpMethod.GET,
         JsonHttpCommunication.simpleJsonRequest(), String.class, appName, domainGuid);
     return response.getBody();

@@ -19,6 +19,8 @@ import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryR
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -31,6 +33,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class AppRecordCreatingStep {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(AppRecordCreatingStep.class);
+
   private final RestTemplate cfRestTemplate;
   private final String cfApiUrl;
 
@@ -42,6 +46,7 @@ public class AppRecordCreatingStep {
   public AppRouteCreatingStep createAppRecord(String spaceGuid, String appName)
       throws EnginePublicationException {
 
+    LOGGER.info("Creating app record for " + appName + " in space " + spaceGuid);
     String requestBody = createAppRecordBody(spaceGuid, appName);
 
     String cfAppsUrl = cfApiUrl + APPS_ENDPOINT;

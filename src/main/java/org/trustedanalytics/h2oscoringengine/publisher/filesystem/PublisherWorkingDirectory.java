@@ -68,6 +68,4 @@ public class PublisherWorkingDirectory {
     return scoringEngineJarDir;
   }
 
-
-
 }

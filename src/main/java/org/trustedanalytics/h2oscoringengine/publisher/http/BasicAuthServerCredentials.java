@@ -21,10 +21,9 @@ import lombok.Data;
 public class BasicAuthServerCredentials {
 
   private String host;
-
   private String username;
-
   private String password;
+  private String basicAuthToken;
 
   public BasicAuthServerCredentials() {}
 
@@ -35,8 +34,13 @@ public class BasicAuthServerCredentials {
   }
 
   public String getBasicAuthToken() {
-    String basicAuthCredentialsString = username + ":" + password;
-    byte[] basicAuthToken = Base64.encodeBase64(basicAuthCredentialsString.getBytes());
-    return new String(basicAuthToken);
+    if (basicAuthToken == null) {
+      String basicAuthCredentialsString = username + ":" + password;
+      byte[] basicAuthToken = Base64.encodeBase64(basicAuthCredentialsString.getBytes());
+      this.basicAuthToken = new String(basicAuthToken);
+    }
+    return basicAuthToken;
   }
+
+
 }

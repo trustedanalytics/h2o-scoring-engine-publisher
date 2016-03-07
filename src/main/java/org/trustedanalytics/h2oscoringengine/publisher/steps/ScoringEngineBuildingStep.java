@@ -39,9 +39,10 @@ public class ScoringEngineBuildingStep {
     this.modelJarPath = modelJarPath;
   }
 
-  public Path buildScoringEngine(Path scorignEngineDir) throws EnginePublicationException {
+  public Path buildScoringEngine(Path scoringEngineDir) throws EnginePublicationException {
     try {
-      Path scoringEngineJar = buildScoringEngine(modelJarPath, scorignEngineDir);
+      LOGGER.info("Creating scoring engine JAR for model: " + modelJarPath);
+      Path scoringEngineJar = buildScoringEngine(modelJarPath, scoringEngineDir);
       LOGGER.info("Generated JAR: " + scoringEngineJar);
       return scoringEngineJar;
     } catch (IOException e) {
@@ -51,7 +52,6 @@ public class ScoringEngineBuildingStep {
   }
 
   private Path buildScoringEngine(Path modelJarPath, Path targetDir) throws IOException {
-    LOGGER.info("Creating scoring engine JAR for model: " + modelJarPath);
     UpdatableJar engineJar = new UpdatableJar(SCORING_ENGINE_FILE_NAME, targetDir);
     Path engineJarPath =
         engineJar.addJarContent(createTemplateJar(ENGINE_BASE_RESOURCE_PATH, targetDir))

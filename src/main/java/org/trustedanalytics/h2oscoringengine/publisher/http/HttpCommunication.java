@@ -16,12 +16,12 @@ package org.trustedanalytics.h2oscoringengine.publisher.http;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 
-public final class JsonHttpCommunication {
+public final class HttpCommunication {
   
-  private JsonHttpCommunication(){}
+  private HttpCommunication(){}
 
   public static HttpEntity<String> simpleJsonRequest() {
-    return new HttpEntity<String>(createJsonHeaders());
+    return new HttpEntity<>(createJsonHeaders());
   }
 
   public static HttpEntity<String> postRequest(String body) {
@@ -29,7 +29,7 @@ public final class JsonHttpCommunication {
     headers.add("Accept", "application/json");
     headers.add("Content-type", "application/x-www-form-urlencoded");
 
-    return new HttpEntity<String>(body, headers);
+    return new HttpEntity<>(body, headers);
   }
 
   public static HttpEntity<String> basicAuthRequest(String basicAuthToken) {
@@ -46,6 +46,17 @@ public final class JsonHttpCommunication {
 
     return headers;
   }
+  
+  public static HttpHeaders zipHeaders() {
+    HttpHeaders bitsHeaders = new HttpHeaders();
+    bitsHeaders.add("Content-type", "application/zip");
+
+    return bitsHeaders;
+  }
+  
+  public HttpEntity<String> resourcesEntity(String data) {
+    return new HttpEntity<>(data);
+  }
 
   private static HttpHeaders createJsonHeaders() {
     HttpHeaders headers = new HttpHeaders();
@@ -54,4 +65,6 @@ public final class JsonHttpCommunication {
 
     return headers;
   }
+  
+  
 }

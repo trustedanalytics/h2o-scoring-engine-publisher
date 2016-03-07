@@ -18,7 +18,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.print.attribute.standard.JobOriginatingUserName;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -51,8 +53,7 @@ public class ModelCompilationStep {
   private Path compile(Path targetDir) throws EngineBuildingException {
 
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    DiagnosticCollector<JavaFileObject> diagnosticListener =
-        new DiagnosticCollector<JavaFileObject>();
+    DiagnosticCollector<JavaFileObject> diagnosticListener = new DiagnosticCollector<>();
     StandardJavaFileManager fileManager =
         compiler.getStandardFileManager(diagnosticListener, null, null);
     Iterable<? extends JavaFileObject> compilationUnit =
@@ -79,10 +80,7 @@ public class ModelCompilationStep {
   }
 
   private String compilationFailureMessage(DiagnosticCollector<JavaFileObject> diagnostics) {
-    String message = "";
-    for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-      message += diagnostic.getMessage(null);
-    }
-    return message;
+    return diagnostics.getDiagnostics().stream().map(d -> d.getMessage(null))
+        .collect(Collectors.joining());
   }
 }

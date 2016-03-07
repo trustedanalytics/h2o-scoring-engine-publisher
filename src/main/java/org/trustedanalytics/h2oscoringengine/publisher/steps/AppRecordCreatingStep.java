@@ -25,7 +25,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
-import org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication;
+import org.trustedanalytics.h2oscoringengine.publisher.http.HttpCommunication;
 import org.trustedanalytics.h2oscoringengine.publisher.http.JsonDataFetcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,10 +37,12 @@ public class AppRecordCreatingStep {
 
   private final RestTemplate cfRestTemplate;
   private final String cfApiUrl;
+  private final String cfAppsUrl;
 
   public AppRecordCreatingStep(String cfApiUrl, RestTemplate cfRestTemplate) {
     this.cfRestTemplate = cfRestTemplate;
     this.cfApiUrl = cfApiUrl;
+    this.cfAppsUrl = cfApiUrl + APPS_ENDPOINT;
   }
 
   public AppRouteCreatingStep createAppRecord(String spaceGuid, String appName)
@@ -49,9 +51,8 @@ public class AppRecordCreatingStep {
     LOGGER.info("Creating app record for " + appName + " in space " + spaceGuid);
     String requestBody = createAppRecordBody(spaceGuid, appName);
 
-    String cfAppsUrl = cfApiUrl + APPS_ENDPOINT;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfAppsUrl, HttpMethod.POST,
-        JsonHttpCommunication.postRequest(requestBody), String.class);
+        HttpCommunication.postRequest(requestBody), String.class);
 
     try {
       String appGuid = JsonDataFetcher.getStringValue(response.getBody(), APP_GUID_JSON_PATH);
@@ -70,6 +71,4 @@ public class AppRecordCreatingStep {
 
     return requestBody.toString();
   }
-
-
 }

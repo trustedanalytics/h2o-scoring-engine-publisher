@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
-import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
 import org.trustedanalytics.h2oscoringengine.publisher.http.FilesDownloader;
 
 public class H2oResourcesDownloadingStep {
@@ -25,16 +24,15 @@ public class H2oResourcesDownloadingStep {
   private static final String H2O_SERVER_MODEL_PATH_PREFIX = "/3/Models.java/";
   private static final String H2O_SERVER_LIB_PATH = "/3/h2o-genmodel.jar";
 
-  public ModelCompilationStep downloadResources(BasicAuthServerCredentials h2oCredentials,
+  public ModelCompilationStep downloadResources(FilesDownloader h2oFilesDownloader,
       String modelName, Path targetDirectory) throws EngineBuildingException {
     Path fileForModelPojo = targetDirectory.resolve(getModelPojoFileName(modelName));
     Path fileForLib = targetDirectory.resolve("genmodel.jar");
 
-    FilesDownloader downloader = new FilesDownloader(h2oCredentials);
     try {
       Path downloadedModelPath =
-          downloader.download(H2O_SERVER_MODEL_PATH_PREFIX + modelName, fileForModelPojo);
-      Path downloadedLibPath = downloader.download(H2O_SERVER_LIB_PATH, fileForLib);
+          h2oFilesDownloader.download(H2O_SERVER_MODEL_PATH_PREFIX + modelName, fileForModelPojo);
+      Path downloadedLibPath = h2oFilesDownloader.download(H2O_SERVER_LIB_PATH, fileForLib);
       return new ModelCompilationStep(downloadedModelPath, downloadedLibPath);
 
     } catch (IOException e) {

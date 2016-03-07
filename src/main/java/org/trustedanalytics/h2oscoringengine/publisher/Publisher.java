@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.filesystem.FsDirectoryOperations;
 import org.trustedanalytics.h2oscoringengine.publisher.filesystem.PublisherWorkingDirectory;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
+import org.trustedanalytics.h2oscoringengine.publisher.http.FilesDownloader;
 import org.trustedanalytics.h2oscoringengine.publisher.restapi.PublishRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.steps.AppRecordCreatingStep;
 import org.trustedanalytics.h2oscoringengine.publisher.steps.CheckingIfAppExistsStep;
@@ -56,24 +57,22 @@ public class Publisher {
       throw new EnginePublicationException("Unable to create dir for publisher: ", e);
     }
 
-    Path scoringEngineJar =
-        buildScoringEngineJar(workingDir, request.getH2oCredentials(), request.getModelName());
+    Path scoringEngineJar = buildScoringEngineJar(workingDir,
+        new FilesDownloader(request.getH2oCredentials()), request.getModelName());
 
     publishToMarketplace(scoringEngineJar, appName, technicalSpaceGuid, request.getOrgGuid());
 
   }
 
   private Path buildScoringEngineJar(PublisherWorkingDirectory workingDir,
-      BasicAuthServerCredentials h2oCredentials, String modelName)
+      FilesDownloader h2oFilesDownloader, String modelName)
       throws EnginePublicationException, EngineBuildingException {
 
     H2oResourcesDownloadingStep h2oResourcesDownloadingStep = new H2oResourcesDownloadingStep();
-    Path scoringEngineJarPath = h2oResourcesDownloadingStep
-        .downloadResources(h2oCredentials, modelName, workingDir.getH2oResourcesPath())
+    return h2oResourcesDownloadingStep
+        .downloadResources(h2oFilesDownloader, modelName, workingDir.getH2oResourcesPath())
         .compileModel(workingDir.getCompiledModelPath()).packageModel(workingDir.getModelJarPath())
         .buildScoringEngine(workingDir.getScoringEngineJarDir());
-
-    return scoringEngineJarPath;
   }
 
   private void publishToMarketplace(Path appBits, String appName, String technicalSpaceGuid,

@@ -36,6 +36,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
+import org.trustedanalytics.h2oscoringengine.publisher.http.HttpCommunication;
 
 
 public class AppBitsUploadingStep {
@@ -93,17 +94,23 @@ public class AppBitsUploadingStep {
     HttpEntity<String> resourcesPart = prepareResourcesRequestPart();
     HttpEntity<ByteArrayResource> dataPart = prepareDataRequestPart(dataPath);
 
-    MultiValueMap<String, Object> multiPartRequest = new LinkedMultiValueMap<String, Object>();
+    MultiValueMap<String, Object> multiPartRequest = new LinkedMultiValueMap<>();
     multiPartRequest.add("resources", resourcesPart);
     multiPartRequest.add("application", dataPart);
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-    return new HttpEntity<MultiValueMap<String, Object>>(multiPartRequest, headers);
+    return new HttpEntity<>(multiPartRequest, headers);
 
   }
 
+  /**
+   * CloudFoundry API requires an array of files it already has in cache.
+   * We're sending an empty array here. 
+   * 
+   * @return
+   */
   private HttpEntity<String> prepareResourcesRequestPart() {
     String resourcesJson = "[]";
     return new HttpEntity<>(resourcesJson);
@@ -112,10 +119,9 @@ public class AppBitsUploadingStep {
   private HttpEntity<ByteArrayResource> prepareDataRequestPart(Path dataPath) throws IOException {
 
     ByteArrayResource data = prepareData(dataPath);
-    HttpHeaders headers = prepareHeadersForAppBits();
+    HttpHeaders headers = HttpCommunication.zipHeaders();
 
-    return new HttpEntity<ByteArrayResource>(data, headers);
-
+    return new HttpEntity<>(data, headers);
   }
 
   private ByteArrayResource prepareData(Path dataPath) throws IOException {
@@ -125,12 +131,5 @@ public class AppBitsUploadingStep {
         return dataPath.getFileName().toString();
       }
     };
-  }
-
-  private HttpHeaders prepareHeadersForAppBits() {
-    HttpHeaders bitsHeaders = new HttpHeaders();
-    bitsHeaders.add("Content-type", "application/zip");
-
-    return bitsHeaders;
   }
 }

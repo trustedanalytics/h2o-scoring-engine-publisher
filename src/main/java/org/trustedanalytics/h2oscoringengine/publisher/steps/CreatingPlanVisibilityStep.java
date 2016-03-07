@@ -27,7 +27,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
-import org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication;
+import org.trustedanalytics.h2oscoringengine.publisher.http.HttpCommunication;
 import org.trustedanalytics.h2oscoringengine.publisher.http.JsonDataFetcher;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,7 +48,7 @@ public class CreatingPlanVisibilityStep {
 
   public void addServicePlanVisibility(String orgGuid, String serviceName)
       throws EnginePublicationException {
-    LOGGER.info("Setting plan visibility for " + serviceName + " in " + orgGuid + " organisation");
+    LOGGER.info("Setting plan visibility for " + serviceName + " in " + orgGuid + " organization");
 
     try {
       String serviceGuid = getServiceGuidByName(serviceName);
@@ -58,7 +58,7 @@ public class CreatingPlanVisibilityStep {
       String cfPlanVisibilityUrl = cfApiUrl + SERVICE_PLAN_VISIBILITIES_ENDPOINT;
 
       cfRestTemplate.exchange(cfPlanVisibilityUrl, HttpMethod.POST,
-          JsonHttpCommunication.postRequest(requestBody), String.class);
+          HttpCommunication.postRequest(requestBody), String.class);
     } catch (IOException e) {
       throw new EnginePublicationException(
           "Unable to set service plan visibility for " + serviceName, e);
@@ -69,7 +69,7 @@ public class CreatingPlanVisibilityStep {
       throws JsonProcessingException, IOException {
     String cfServiceGuidUrl = cfApiUrl + GET_SERVICE_GUID_BY_NAME_ENDPOINT_TEMPLATE;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfServiceGuidUrl, HttpMethod.GET,
-        JsonHttpCommunication.simpleJsonRequest(), String.class, serviceName);
+        HttpCommunication.simpleJsonRequest(), String.class, serviceName);
 
     return JsonDataFetcher.getStringValue(response.getBody(), SERVICE_GUID_JSON_PATH);
 
@@ -79,7 +79,7 @@ public class CreatingPlanVisibilityStep {
       throws JsonProcessingException, IOException {
     String cfServicePlanUrl = cfApiUrl + GET_SERVICE_PLANS_ENDPOINT_TEMPLATE;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfServicePlanUrl, HttpMethod.GET,
-        JsonHttpCommunication.simpleJsonRequest(), String.class, serviceGuid);
+        HttpCommunication.simpleJsonRequest(), String.class, serviceGuid);
 
     return JsonDataFetcher.getStringValue(response.getBody(), FIRST_SERVICE_PLAN_GUID);
 

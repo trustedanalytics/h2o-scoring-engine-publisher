@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Consumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
@@ -50,14 +49,11 @@ public class ModelPackagingStep {
     try {
       jar = new JarOutputStream(new FileOutputStream(fileForJar.toString()));
 
-      Files.walk(classesDir).forEach(new Consumer<Path>() {
-        @Override
-        public void accept(Path classFile) {
-          try {
-            addClassFileToJar(jar, classFile);
-          } catch (IOException e) {
-            throw new DirectoryTraversingException(e);
-          }
+      Files.walk(classesDir).forEach(classFile -> {
+        try {
+          addClassFileToJar(jar, classFile);
+        } catch (IOException e) {
+          throw new DirectoryTraversingException(e);
         }
       });
 
@@ -73,7 +69,6 @@ public class ModelPackagingStep {
   private void addClassFileToJar(JarOutputStream jar, Path classFile) throws IOException {
     if (classFile.toString().endsWith(".class")) {
       jar.putNextEntry(new JarEntry(classFile.getFileName().toString()));
-      jar.write(Files.readAllBytes(classFile));
       jar.closeEntry();
     }
   }
@@ -86,5 +81,4 @@ public class ModelPackagingStep {
       super(cause);
     }
   }
-
 }

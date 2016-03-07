@@ -24,7 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
-import org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication;
+import org.trustedanalytics.h2oscoringengine.publisher.http.HttpCommunication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -53,8 +53,8 @@ public class RegisteringInApplicationBrokerStep {
 
     String requestBody = prepareAppBrokerJsonRequest(serviceName, serviceDescription);
     HttpHeaders headers =
-        JsonHttpCommunication.basicAuthJsonHeaders(appBrokerCredentials.getBasicAuthToken());
-    HttpEntity<String> request = new HttpEntity<String>(requestBody, headers);
+        HttpCommunication.basicAuthJsonHeaders(appBrokerCredentials.getBasicAuthToken());
+    HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
 
     String appBrokerEndpoint = appBrokerCredentials.getHost() + APP_BROKER_CATALOG_ENDPOINT;
     new RestTemplate().exchange(appBrokerEndpoint, HttpMethod.POST, request, String.class);

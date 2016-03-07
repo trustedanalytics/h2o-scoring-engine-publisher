@@ -34,8 +34,8 @@ public class FilesDownloader {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FilesDownloader.class);
 
-  private String basicAuthToken;
-  private String serverUrl;
+  private final String basicAuthToken;
+  private final String serverUrl;
 
   public FilesDownloader(BasicAuthServerCredentials serverCredentials) {
     this.serverUrl = serverCredentials.getHost();
@@ -53,7 +53,7 @@ public class FilesDownloader {
 
     try {
       ResponseEntity<byte[]> response = restTemplate.exchange(resourceUrl, HttpMethod.GET,
-          JsonHttpCommunication.basicAuthRequest(basicAuthToken), byte[].class);
+          HttpCommunication.basicAuthRequest(basicAuthToken), byte[].class);
       return Files.write(destinationFilePath, response.getBody());
 
     } catch (HttpClientErrorException e) {

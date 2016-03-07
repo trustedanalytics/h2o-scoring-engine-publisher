@@ -30,7 +30,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
-import org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication;
+import org.trustedanalytics.h2oscoringengine.publisher.http.HttpCommunication;
 import org.trustedanalytics.h2oscoringengine.publisher.http.JsonDataFetcher;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -81,7 +81,7 @@ public class AppRouteCreatingStep {
   private String getAvailableDomain() throws JsonProcessingException, IOException {
     String cfDomainsUrl = cfApiUrl + SHARED_DOMAINS_ENDPOINT;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfDomainsUrl, HttpMethod.GET,
-        JsonHttpCommunication.simpleJsonRequest(), String.class);
+        HttpCommunication.simpleJsonRequest(), String.class);
     String domainGuid = JsonDataFetcher.getStringValue(response.getBody(), DOMAIN_JSON_PATH);
 
     return domainGuid;
@@ -91,18 +91,18 @@ public class AppRouteCreatingStep {
     String cfGetRoutesUrl = cfApiUrl + GET_ROUTES_ENDPOINT_TEMPLATE;
 
     ResponseEntity<String> response = cfRestTemplate.exchange(cfGetRoutesUrl, HttpMethod.GET,
-        JsonHttpCommunication.simpleJsonRequest(), String.class, appName, domainGuid);
+        HttpCommunication.simpleJsonRequest(), String.class, appName, domainGuid);
     return response.getBody();
   }
 
   private String createNewRoute(String appName, String domainGuid, String spaceGuid)
       throws JsonProcessingException, IOException {
 
-    String createRouterequestBody = createRouteBody(appName, domainGuid, spaceGuid);
+    String createRouteRequestBody = createRouteBody(appName, domainGuid, spaceGuid);
 
     String cfCreateRouteUrl = cfApiUrl + ROUTES_ENDPOINT;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfCreateRouteUrl, HttpMethod.POST,
-        JsonHttpCommunication.postRequest(createRouterequestBody), String.class);
+        HttpCommunication.postRequest(createRouteRequestBody), String.class);
 
     return JsonDataFetcher.getStringValue(response.getBody(), ROUTE_GUID_JSON_PATH);
   }
@@ -110,7 +110,7 @@ public class AppRouteCreatingStep {
   private void bindRouteToApp(String routeGuid, String appGuid) {
     String cfBindRouteToAppUrl = cfApiUrl + BIND_ROUTE_TO_APP_ENDPOINT_TEMPLATE;
     cfRestTemplate.exchange(cfBindRouteToAppUrl, HttpMethod.PUT,
-        JsonHttpCommunication.simpleJsonRequest(), String.class, appGuid, routeGuid);
+        HttpCommunication.simpleJsonRequest(), String.class, appGuid, routeGuid);
   }
 
   private String createRouteBody(String subdomain, String domainGuid, String spaceGuid) {

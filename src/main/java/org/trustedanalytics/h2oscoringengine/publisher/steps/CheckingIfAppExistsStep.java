@@ -24,7 +24,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
-import org.trustedanalytics.h2oscoringengine.publisher.http.JsonHttpCommunication;
+import org.trustedanalytics.h2oscoringengine.publisher.http.HttpCommunication;
 import org.trustedanalytics.h2oscoringengine.publisher.http.JsonDataFetcher;
 
 public class CheckingIfAppExistsStep {
@@ -44,7 +44,7 @@ public class CheckingIfAppExistsStep {
 
     LOGGER.info("Checking if app " + appName + " already exists in CloudFoundry");
     ResponseEntity<String> response = cfRestTemplate.exchange(cfAppInSpaceUrl, HttpMethod.GET,
-        JsonHttpCommunication.simpleJsonRequest(), String.class, spaceGuid, appName);
+        HttpCommunication.simpleJsonRequest(), String.class, spaceGuid, appName);
 
     Integer appsNumber;
     try {

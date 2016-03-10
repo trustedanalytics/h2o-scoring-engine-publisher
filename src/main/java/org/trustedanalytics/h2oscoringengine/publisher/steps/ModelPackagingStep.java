@@ -22,6 +22,7 @@ import java.util.jar.JarOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
 
 public class ModelPackagingStep {
@@ -36,13 +37,13 @@ public class ModelPackagingStep {
     this.classesDir = classesDir;
   }
 
-  public ScoringEngineBuildingStep packageModel(Path targetDir) throws EnginePublicationException {
+  public ScoringEngineBuildingStep packageModel(Path targetDir) throws EngineBuildingException {
     Path fileForJar = targetDir.resolve(MODEL_JAR_FILE_NAME);
     Path jar = createJar(classesDir, fileForJar);
     return new ScoringEngineBuildingStep(jar);
   }
 
-  private Path createJar(Path classesDir, Path fileForJar) throws EnginePublicationException {
+  private Path createJar(Path classesDir, Path fileForJar) throws EngineBuildingException {
     JarOutputStream jar;
 
     LOGGER.info("Creating model JAR for classes directory: " + classesDir);
@@ -61,7 +62,7 @@ public class ModelPackagingStep {
       jar.close();
     } catch (IOException | DirectoryTraversingException e) {
       LOGGER.error("Error while creating model jar file: ", e);
-      throw new EnginePublicationException("Error while creating model jar file ", e);
+      throw new EngineBuildingException("Error while creating model jar file ", e);
     }
     return fileForJar;
   }

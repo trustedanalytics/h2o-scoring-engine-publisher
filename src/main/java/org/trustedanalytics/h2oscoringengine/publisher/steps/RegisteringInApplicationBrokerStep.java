@@ -38,12 +38,14 @@ public class RegisteringInApplicationBrokerStep {
   private final String appGuid;
   private final String cfApiUrl;
   private final RestTemplate cfRestTemplate;
+  private final RestTemplate basicAuthRestTemplate;
 
   public RegisteringInApplicationBrokerStep(String appGuid, String cfApiUrl,
-      RestTemplate cfRestTemplate) {
+      RestTemplate cfRestTemplate, RestTemplate basicAuthRestTemplate) {
     this.appGuid = appGuid;
     this.cfApiUrl = cfApiUrl;
     this.cfRestTemplate = cfRestTemplate;
+    this.basicAuthRestTemplate = basicAuthRestTemplate;
   }
 
   public CreatingPlanVisibilityStep register(BasicAuthServerCredentials appBrokerCredentials,
@@ -57,7 +59,7 @@ public class RegisteringInApplicationBrokerStep {
     HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
 
     String appBrokerEndpoint = appBrokerCredentials.getHost() + APP_BROKER_CATALOG_ENDPOINT;
-    new RestTemplate().exchange(appBrokerEndpoint, HttpMethod.POST, request, String.class);
+    basicAuthRestTemplate.exchange(appBrokerEndpoint, HttpMethod.POST, request, String.class);
 
     return new CreatingPlanVisibilityStep(cfApiUrl, cfRestTemplate);
 

@@ -66,7 +66,7 @@ public class AppBitsUploadingStep {
       String cfUploadAppUrl = cfApiUrl + APP_BITS_ENDPOINT_TEMPLATE;
       cfRestTemplate.exchange(cfUploadAppUrl, HttpMethod.PUT, request, String.class, appGuid);
 
-      return new RegisteringInApplicationBrokerStep(appGuid, cfApiUrl, cfRestTemplate);
+      return new RegisteringInApplicationBrokerStep(appGuid, cfApiUrl, cfRestTemplate, new RestTemplate());
     } catch (IOException e) {
       throw new EnginePublicationException(
           "Unable to read application bits from " + appBits.toString(), e);

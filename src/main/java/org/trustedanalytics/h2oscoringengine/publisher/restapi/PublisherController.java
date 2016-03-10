@@ -35,13 +35,13 @@ public class PublisherController {
 
   private final Publisher publisher;
 
-  @Value("${publisher.technicalSpaceGuid}")
-  @NotNull
   private String technicalSpaceGuid;
 
   @Autowired
-  public PublisherController(Publisher publisher) {
+  public PublisherController(Publisher publisher,
+      @Value("${publisher.technicalSpaceGuid}") @NotNull String technicalSpaceGuid) {
     this.publisher = publisher;
+    this.technicalSpaceGuid = technicalSpaceGuid;
   }
 
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "/engine")

@@ -36,23 +36,25 @@ public class FilesDownloader {
 
   private final String basicAuthToken;
   private final String serverUrl;
+  private final RestTemplate basicAuthRestTemplate;
 
-  public FilesDownloader(BasicAuthServerCredentials serverCredentials) {
+  public FilesDownloader(BasicAuthServerCredentials serverCredentials,
+      RestTemplate basicAuthRestTemplate) {
     this.serverUrl = serverCredentials.getHost();
     this.basicAuthToken = serverCredentials.getBasicAuthToken();
+    this.basicAuthRestTemplate = basicAuthRestTemplate;
   }
 
   public Path download(String resourcePath, Path destinationFilePath) throws IOException {
 
-    RestTemplate restTemplate = new RestTemplate();
-    restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+    basicAuthRestTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
     String resourceUrl = serverUrl + resourcePath;
 
     LOGGER.info("Downloading " + resourceUrl);
 
     try {
-      ResponseEntity<byte[]> response = restTemplate.exchange(resourceUrl, HttpMethod.GET,
+      ResponseEntity<byte[]> response = basicAuthRestTemplate.exchange(resourceUrl, HttpMethod.GET,
           HttpCommunication.basicAuthRequest(basicAuthToken), byte[].class);
       return Files.write(destinationFilePath, response.getBody());
 
@@ -69,10 +71,10 @@ public class FilesDownloader {
     switch (httpStatus) {
       case UNAUTHORIZED:
         errorMessage += "Login to " + serverUrl + " with credentials "
-            + Base64.decodeBase64(basicAuthToken.getBytes()) + " failed";
+            + new String(Base64.decodeBase64(basicAuthToken.getBytes())) + " failed";
         break;
       case NOT_FOUND:
-        errorMessage += "Resource not found on the H2O server";
+        errorMessage += "Resource not found.";
         break;
       default:
         errorMessage += "Server response status: " + httpStatus;

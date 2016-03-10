@@ -58,7 +58,7 @@ public class Publisher {
     }
 
     Path scoringEngineJar = buildScoringEngineJar(workingDir,
-        new FilesDownloader(request.getH2oCredentials()), request.getModelName());
+        new FilesDownloader(request.getH2oCredentials(), new RestTemplate()), request.getModelName());
 
     publishToMarketplace(scoringEngineJar, appName, technicalSpaceGuid, request.getOrgGuid());
 

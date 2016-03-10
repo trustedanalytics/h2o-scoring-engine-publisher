@@ -19,10 +19,10 @@ import java.nio.file.Paths;
 
 public class PublisherWorkingDirectory {
 
-  private static final String SYSTEM_TMP = System.getProperty("java.io.tmpdir");
-  private static final String PUBLISHER_PARENT_DIRECTORY_NAME = "h2o-scoring-engine-publisher";
-  private static final String H2O_RESOURCES_SUBDIR_NAME = "model";
-  private static final String COMPILED_MODEL_SUBDIR_NAME = "classes";
+  static final String SYSTEM_TMP = System.getProperty("java.io.tmpdir");
+  static final String PUBLISHER_PARENT_DIRECTORY_NAME = "h2o-scoring-engine-publisher";
+  static final String H2O_RESOURCES_SUBDIR_NAME = "model";
+  static final String COMPILED_MODEL_SUBDIR_NAME = "classes";
 
   private String workingDirectoryName;
   private DirectoryOperations directoryOperations;
@@ -48,6 +48,14 @@ public class PublisherWorkingDirectory {
     return h2oResourcesPath;
   }
 
+  public Path getModelJarPath() {
+    return modelJarPath;
+  }
+  
+  public Path getScoringEngineJarDir() {
+    return scoringEngineJarDir;
+  }
+  
   private void createDirectoryTree() throws IOException {
     Path workingDir = Paths.get(SYSTEM_TMP, PUBLISHER_PARENT_DIRECTORY_NAME, workingDirectoryName);
     directoryOperations.createEmptyDirectoryTree(workingDir);
@@ -59,13 +67,4 @@ public class PublisherWorkingDirectory {
     this.modelJarPath = workingDir;
     this.scoringEngineJarDir = workingDir;
   }
-
-  public Path getModelJarPath() {
-    return modelJarPath;
-  }
-
-  public Path getScoringEngineJarDir() {
-    return scoringEngineJarDir;
-  }
-
 }

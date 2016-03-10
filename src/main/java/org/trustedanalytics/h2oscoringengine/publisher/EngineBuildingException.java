@@ -24,8 +24,4 @@ public class EngineBuildingException extends Exception{
   public EngineBuildingException(String message) {
     super(message);
   }
-
-  public EngineBuildingException(Throwable cause) {
-    super(cause);
-  }
 }

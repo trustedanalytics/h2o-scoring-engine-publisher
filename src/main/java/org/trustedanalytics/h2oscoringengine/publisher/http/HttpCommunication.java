@@ -53,10 +53,6 @@ public final class HttpCommunication {
 
     return bitsHeaders;
   }
-  
-  public HttpEntity<String> resourcesEntity(String data) {
-    return new HttpEntity<>(data);
-  }
 
   private static HttpHeaders createJsonHeaders() {
     HttpHeaders headers = new HttpHeaders();
@@ -65,6 +61,5 @@ public final class HttpCommunication {
 
     return headers;
   }
-  
   
 }

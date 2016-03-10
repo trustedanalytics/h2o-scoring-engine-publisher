@@ -22,6 +22,7 @@ import java.util.jar.JarFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
 import org.trustedanalytics.h2oscoringengine.publisher.filesystem.UpdatableJar;
 
@@ -39,7 +40,7 @@ public class ScoringEngineBuildingStep {
     this.modelJarPath = modelJarPath;
   }
 
-  public Path buildScoringEngine(Path scoringEngineDir) throws EnginePublicationException {
+  public Path buildScoringEngine(Path scoringEngineDir) throws EngineBuildingException {
     try {
       LOGGER.info("Creating scoring engine JAR for model: " + modelJarPath);
       Path scoringEngineJar = buildScoringEngine(modelJarPath, scoringEngineDir);
@@ -47,7 +48,7 @@ public class ScoringEngineBuildingStep {
       return scoringEngineJar;
     } catch (IOException e) {
       LOGGER.error("Error while creating scoring engine JAR: ", e);
-      throw new EnginePublicationException("Error while creating scoring engine JAR: ", e);
+      throw new EngineBuildingException("Error while creating scoring engine JAR: ", e);
     }
   }
 

@@ -17,9 +17,11 @@ import javax.validation.constraints.NotNull;
 
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 public class PublishRequest {
 
   @NotNull

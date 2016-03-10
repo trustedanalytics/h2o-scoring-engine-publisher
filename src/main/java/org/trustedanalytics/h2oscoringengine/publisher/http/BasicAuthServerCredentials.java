@@ -41,6 +41,4 @@ public class BasicAuthServerCredentials {
     }
     return basicAuthToken;
   }
-
-
 }

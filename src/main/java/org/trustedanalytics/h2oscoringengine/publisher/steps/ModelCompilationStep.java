@@ -16,12 +16,9 @@ package org.trustedanalytics.h2oscoringengine.publisher.steps;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.print.attribute.standard.JobOriginatingUserName;
-import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
@@ -31,7 +28,8 @@ import javax.tools.ToolProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
-import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
+
+import lombok.EqualsAndHashCode;
 
 public class ModelCompilationStep {
 
@@ -83,4 +81,13 @@ public class ModelCompilationStep {
     return diagnostics.getDiagnostics().stream().map(d -> d.getMessage(null))
         .collect(Collectors.joining());
   }
+
+  public Path getModelPojoPath() {
+    return modelPojoPath;
+  }
+
+  public Path getLibPath() {
+    return libPath;
+  }
+  
 }

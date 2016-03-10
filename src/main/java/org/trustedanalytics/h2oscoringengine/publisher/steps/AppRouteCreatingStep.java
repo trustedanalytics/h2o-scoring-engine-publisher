@@ -87,11 +87,11 @@ public class AppRouteCreatingStep {
     return domainGuid;
   }
 
-  private String getAppRoutesInfo(String appName, String domainGuid) {
+  private String getAppRoutesInfo(String subDomain, String domainGuid) {
     String cfGetRoutesUrl = cfApiUrl + GET_ROUTES_ENDPOINT_TEMPLATE;
 
     ResponseEntity<String> response = cfRestTemplate.exchange(cfGetRoutesUrl, HttpMethod.GET,
-        HttpCommunication.simpleJsonRequest(), String.class, appName, domainGuid);
+        HttpCommunication.simpleJsonRequest(), String.class, subDomain, domainGuid);
     return response.getBody();
   }
 

@@ -24,8 +24,4 @@ public class EnginePublicationException extends Exception {
   public EnginePublicationException(String message) {
     super(message);
   }
-
-  public EnginePublicationException(Throwable cause) {
-    super(cause);
-  }
 }

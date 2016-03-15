@@ -1,0 +1,14 @@
+publisher:
+  technicalSpaceGuid: ${vcap.application.space_id:}
+  cfApi: ${vcap.services.sso.credentials.apiEndpoint:}
+  applicationBroker:
+    host: ${vcap.services.marketplace-register-service.credentials.applicationBrokerUrl:}
+    username: ${vcap.services.marketplace-register-service.credentials.username:}
+    password: ${vcap.services.marketplace-register-service.credentials.password:}
+
+spring.oauth2:
+  client:
+    accessTokenUri: ${vcap.services.sso.credentials.tokenUri:}
+    clientId: ${vcap.services.sso.credentials.clientId:}
+    clientSecret: ${vcap.services.sso.credentials.clientSecret:}
+    

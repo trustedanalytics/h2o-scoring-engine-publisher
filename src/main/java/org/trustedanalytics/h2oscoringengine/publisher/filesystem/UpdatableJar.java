@@ -40,10 +40,13 @@ public class UpdatableJar implements Closeable {
 
   public UpdatableJar(String fileName, Path targetDirectory) throws IOException {
 
-    if (!fileName.endsWith(".jar")) {
+    String jarFileName = "";
+    if (fileName.endsWith(".jar")) {
+      jarFileName = fileName;
+    } else {
       fileName = fileName.concat(".jar");
     }
-    this.jarPath = Paths.get(targetDirectory.toString(), fileName);
+    this.jarPath = Paths.get(targetDirectory.toString(), jarFileName);
     this.jar = new JarOutputStream(new FileOutputStream(jarPath.toFile()));
   }
 
@@ -66,7 +69,7 @@ public class UpdatableJar implements Closeable {
     while (entries.hasMoreElements()) {
       JarEntry jarEntry = entries.nextElement();
       jar.putNextEntry(jarEntry);
-      
+
       InputStream inputStream = jarFile.getInputStream(jarEntry);
       jar.write(ByteStreams.toByteArray(inputStream));
       jar.closeEntry();

@@ -18,7 +18,8 @@ import org.springframework.http.HttpHeaders;
 
 public final class HttpCommunication {
   
-  private HttpCommunication(){}
+  private HttpCommunication(){
+  }
 
   public static HttpEntity<String> simpleJsonRequest() {
     return new HttpEntity<>(createJsonHeaders());

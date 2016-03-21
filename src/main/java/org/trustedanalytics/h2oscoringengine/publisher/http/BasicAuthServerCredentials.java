@@ -25,7 +25,8 @@ public class BasicAuthServerCredentials {
   private String password;
   private String basicAuthToken;
 
-  public BasicAuthServerCredentials() {}
+  public BasicAuthServerCredentials() {
+  }
 
   public BasicAuthServerCredentials(String host, String username, String password) {
     this.username = username;
@@ -36,8 +37,8 @@ public class BasicAuthServerCredentials {
   public String getBasicAuthToken() {
     if (basicAuthToken == null) {
       String basicAuthCredentialsString = username + ":" + password;
-      byte[] basicAuthToken = Base64.encodeBase64(basicAuthCredentialsString.getBytes());
-      this.basicAuthToken = new String(basicAuthToken);
+      byte[] byteBasicAuthToken = Base64.encodeBase64(basicAuthCredentialsString.getBytes());
+      this.basicAuthToken = new String(byteBasicAuthToken);
     }
     return basicAuthToken;
   }

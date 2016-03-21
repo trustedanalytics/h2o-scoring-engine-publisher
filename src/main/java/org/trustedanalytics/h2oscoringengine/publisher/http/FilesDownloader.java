@@ -61,7 +61,7 @@ public class FilesDownloader {
     } catch (HttpClientErrorException e) {
       String errorMessage = prepareErrorMessage(e.getStatusCode(), resourceUrl);
       LOGGER.error(errorMessage);
-      throw new IOException(errorMessage);
+      throw new IOException(errorMessage, e);
     }
   }
 

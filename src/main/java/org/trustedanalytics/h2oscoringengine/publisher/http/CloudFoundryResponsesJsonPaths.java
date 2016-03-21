@@ -15,8 +15,6 @@ package org.trustedanalytics.h2oscoringengine.publisher.http;
 
 public final class CloudFoundryResponsesJsonPaths {
 
-  private CloudFoundryResponsesJsonPaths() {}
-
   public static final String APPS_NUMBER_JSON_PATH = "/total_results";
   public static final String DOMAIN_JSON_PATH = "/resources/0/metadata/guid";
   public static final String ROUTE_JSON_PATH = "/resources/0/metadata/guid";
@@ -26,4 +24,7 @@ public final class CloudFoundryResponsesJsonPaths {
   public static final String SERVICE_GUID_JSON_PATH = "/resources/0/metadata/guid";
   public static final String FIRST_SERVICE_PLAN_GUID = "/resources/0/metadata/guid";
 
+  private CloudFoundryResponsesJsonPaths() {
+  }
+  
 }

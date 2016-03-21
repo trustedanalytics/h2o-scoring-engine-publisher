@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class AppBitsUploadingStep {
   }
 
   private void prepareRestTemplateForMultipartRequest() {
-    ArrayList<HttpMessageConverter<?>> converters =
+    List<HttpMessageConverter<?>> converters =
         new ArrayList<>(Arrays.asList(new MappingJackson2HttpMessageConverter(),
             new ResourceHttpMessageConverter(), new FormHttpMessageConverter()));
     cfRestTemplate.getMessageConverters().addAll(converters);

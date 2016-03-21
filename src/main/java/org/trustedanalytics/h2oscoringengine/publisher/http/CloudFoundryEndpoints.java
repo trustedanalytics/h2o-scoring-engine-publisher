@@ -15,8 +15,6 @@ package org.trustedanalytics.h2oscoringengine.publisher.http;
 
 public final class CloudFoundryEndpoints {
 
-  private CloudFoundryEndpoints() {}
-
   public static final String APP_IN_SPACE_ENDPOINT_TEMPLATE =
       "/v2/spaces/{spaceGuid}/apps?q=name:{appName}";
   public static final String APPS_ENDPOINT = "/v2/apps";
@@ -33,4 +31,7 @@ public final class CloudFoundryEndpoints {
   public static final String GET_SERVICE_PLANS_ENDPOINT_TEMPLATE =
       "/v2/service_plans?q=service_guid:{serviceGuid}";
   public static final String SERVICE_PLAN_VISIBILITIES_ENDPOINT = "/v2/service_plan_visibilities";
+  
+  private CloudFoundryEndpoints() {
+  }
 }

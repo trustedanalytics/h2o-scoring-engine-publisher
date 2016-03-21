@@ -1,0 +1,7 @@
+---
+applications:
+- name: h2o-scoring-engine-publisher
+  path: target/h2o-scoring-engine-publisher-${project.version}.jar
+  services:
+  - sso
+  - marketplace-register-service

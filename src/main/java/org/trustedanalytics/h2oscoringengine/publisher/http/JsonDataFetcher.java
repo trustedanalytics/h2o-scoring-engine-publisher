@@ -21,22 +21,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class JsonDataFetcher {
 
-  private JsonDataFetcher() {
-  }
+  private JsonDataFetcher() {}
 
-  public static String getStringValue(String json, String valuePath)
-      throws JsonProcessingException, IOException {
+  public static String getStringValue(String json, String valuePath) throws IOException {
     JsonNode root = getJsonRootNode(json);
     return root.at(valuePath).asText();
   }
 
-  public static Integer getIntValue(String json, String valuePath)
-      throws JsonProcessingException, IOException {
+  public static Integer getIntValue(String json, String valuePath) throws IOException {
     JsonNode root = getJsonRootNode(json);
     return root.at(valuePath).asInt();
   }
 
-  private static JsonNode getJsonRootNode(String json) throws JsonProcessingException, IOException {
+  private static JsonNode getJsonRootNode(String json) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     return mapper.readTree(json);
   }

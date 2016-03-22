@@ -44,7 +44,7 @@ public class UpdatableJar implements Closeable {
     if (fileName.endsWith(".jar")) {
       jarFileName = fileName;
     } else {
-      fileName = fileName.concat(".jar");
+      jarFileName = fileName.concat(".jar");
     }
     this.jarPath = Paths.get(targetDirectory.toString(), jarFileName);
     this.jar = new JarOutputStream(new FileOutputStream(jarPath.toFile()));

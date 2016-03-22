@@ -65,8 +65,7 @@ public class CreatingPlanVisibilityStep {
     }
   }
 
-  private String getServiceGuidByName(String serviceName)
-      throws JsonProcessingException, IOException {
+  private String getServiceGuidByName(String serviceName) throws IOException {
     String cfServiceGuidUrl = cfApiUrl + GET_SERVICE_GUID_BY_NAME_ENDPOINT_TEMPLATE;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfServiceGuidUrl, HttpMethod.GET,
         HttpCommunication.simpleJsonRequest(), String.class, serviceName);
@@ -75,8 +74,7 @@ public class CreatingPlanVisibilityStep {
 
   }
 
-  private String getServicePlanGuid(String serviceGuid)
-      throws JsonProcessingException, IOException {
+  private String getServicePlanGuid(String serviceGuid) throws IOException {
     String cfServicePlanUrl = cfApiUrl + GET_SERVICE_PLANS_ENDPOINT_TEMPLATE;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfServicePlanUrl, HttpMethod.GET,
         HttpCommunication.simpleJsonRequest(), String.class, serviceGuid);

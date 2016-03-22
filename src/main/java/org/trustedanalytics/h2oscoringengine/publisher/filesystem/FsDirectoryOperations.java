@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class FsDirectoryOperations implements DirectoryOperations {
 
-  private static Logger LOGGER = LoggerFactory.getLogger(FsDirectoryOperations.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FsDirectoryOperations.class);
 
   @Override
   public Path createEmptyDirectoryTree(Path path) throws IOException {

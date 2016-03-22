@@ -23,7 +23,6 @@ import java.util.jar.JarOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
-import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
 
 public class ModelPackagingStep {
 
@@ -50,13 +49,7 @@ public class ModelPackagingStep {
     try {
       jar = new JarOutputStream(new FileOutputStream(fileForJar.toString()));
 
-      Files.walk(classesDir).forEach(classFile -> {
-        try {
-          addClassFileToJar(jar, classFile);
-        } catch (IOException e) {
-          throw new DirectoryTraversingException(e);
-        }
-      });
+      Files.walk(classesDir).forEach(classFile -> addClassFileToJar(jar, classesDir));
 
       jar.flush();
       jar.close();
@@ -67,10 +60,15 @@ public class ModelPackagingStep {
     return fileForJar;
   }
 
-  private void addClassFileToJar(JarOutputStream jar, Path classFile) throws IOException {
-    if (classFile.toString().endsWith(".class")) {
-      jar.putNextEntry(new JarEntry(classFile.getFileName().toString()));
-      jar.closeEntry();
+  private void addClassFileToJar(JarOutputStream jar, Path classFile)
+      throws DirectoryTraversingException {
+    try {
+      if (classFile.toString().endsWith(".class")) {
+        jar.putNextEntry(new JarEntry(classFile.getFileName().toString()));
+        jar.closeEntry();
+      }
+    } catch (IOException e) {
+      throw new DirectoryTraversingException(e);
     }
   }
 

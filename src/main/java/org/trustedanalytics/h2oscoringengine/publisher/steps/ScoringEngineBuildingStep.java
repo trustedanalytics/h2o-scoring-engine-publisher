@@ -23,7 +23,6 @@ import java.util.jar.JarFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
-import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
 import org.trustedanalytics.h2oscoringengine.publisher.filesystem.UpdatableJar;
 
 public class ScoringEngineBuildingStep {

@@ -21,7 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class JsonDataFetcher {
 
-  private JsonDataFetcher() {}
+  private JsonDataFetcher() {
+  }
 
   public static String getStringValue(String json, String valuePath)
       throws JsonProcessingException, IOException {

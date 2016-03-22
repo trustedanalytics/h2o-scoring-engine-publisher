@@ -33,7 +33,6 @@ import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationExceptio
 import org.trustedanalytics.h2oscoringengine.publisher.http.HttpCommunication;
 import org.trustedanalytics.h2oscoringengine.publisher.http.JsonDataFetcher;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -82,9 +81,7 @@ public class AppRouteCreatingStep {
     String cfDomainsUrl = cfApiUrl + SHARED_DOMAINS_ENDPOINT;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfDomainsUrl, HttpMethod.GET,
         HttpCommunication.simpleJsonRequest(), String.class);
-    String domainGuid = JsonDataFetcher.getStringValue(response.getBody(), DOMAIN_JSON_PATH);
-
-    return domainGuid;
+    return JsonDataFetcher.getStringValue(response.getBody(), DOMAIN_JSON_PATH);
   }
 
   private String getAppRoutesInfo(String subDomain, String domainGuid) {

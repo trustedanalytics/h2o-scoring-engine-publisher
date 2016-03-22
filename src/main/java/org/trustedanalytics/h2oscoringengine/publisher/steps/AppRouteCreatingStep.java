@@ -78,7 +78,7 @@ public class AppRouteCreatingStep {
 
   }
 
-  private String getAvailableDomain() throws JsonProcessingException, IOException {
+  private String getAvailableDomain() throws IOException {
     String cfDomainsUrl = cfApiUrl + SHARED_DOMAINS_ENDPOINT;
     ResponseEntity<String> response = cfRestTemplate.exchange(cfDomainsUrl, HttpMethod.GET,
         HttpCommunication.simpleJsonRequest(), String.class);
@@ -96,7 +96,7 @@ public class AppRouteCreatingStep {
   }
 
   private String createNewRoute(String appName, String domainGuid, String spaceGuid)
-      throws JsonProcessingException, IOException {
+      throws IOException {
 
     String createRouteRequestBody = createRouteBody(appName, domainGuid, spaceGuid);
 

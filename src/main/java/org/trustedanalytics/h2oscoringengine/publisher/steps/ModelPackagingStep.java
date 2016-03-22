@@ -60,8 +60,7 @@ public class ModelPackagingStep {
     return fileForJar;
   }
 
-  private void addClassFileToJar(JarOutputStream jar, Path classFile)
-      throws DirectoryTraversingException {
+  private void addClassFileToJar(JarOutputStream jar, Path classFile) {
     try {
       if (classFile.toString().endsWith(".class")) {
         jar.putNextEntry(new JarEntry(classFile.getFileName().toString()));

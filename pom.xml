@@ -8,15 +8,15 @@
 	</parent>
 
 	<artifactId>h2o-scoring-engine-publisher</artifactId>
-	<version>0.4.5</version>
+	<version>0.4.6</version>
 	<name>h2o-scoring-engine-publisher</name>
 
 	<properties>
 		<start-class>org.trustedanalytics.h2oscoringengine.publisher.Application</start-class>
-		<jacoco-measurement-instructions>0.8</jacoco-measurement-instructions>
-		<jacoco-measurement-branches>0.75</jacoco-measurement-branches>
-		<jacoco-measurement-lines>0.8</jacoco-measurement-lines>
-		<jacoco-measurement-classes>0.8</jacoco-measurement-classes>
+		<jacoco-measurement-instructions>0.850</jacoco-measurement-instructions>
+		<jacoco-measurement-branches>0.850</jacoco-measurement-branches>
+		<jacoco-measurement-lines>0.900</jacoco-measurement-lines>
+		<jacoco-measurement-classes>0.900</jacoco-measurement-classes>
 	</properties>
 
 	<dependencies>

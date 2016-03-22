@@ -60,7 +60,7 @@ public class ModelPackagingStep {
     return fileForJar;
   }
 
-  private void addClassFileToJar(JarOutputStream jar, Path classFile) {
+  void addClassFileToJar(JarOutputStream jar, Path classFile) {
     try {
       if (classFile.toString().endsWith(".class")) {
         jar.putNextEntry(new JarEntry(classFile.getFileName().toString()));
@@ -71,7 +71,7 @@ public class ModelPackagingStep {
     }
   }
 
-  private class DirectoryTraversingException extends RuntimeException {
+  class DirectoryTraversingException extends RuntimeException {
 
     private static final long serialVersionUID = 9117429708749767380L;
 

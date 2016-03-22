@@ -29,8 +29,6 @@ public class ScoringEngineBuildingStep {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ScoringEngineBuildingStep.class);
   private static final String SCORING_ENGINE_FILE_NAME = "scoring-engine.jar";
-  private static final String ENGINE_BASE_RESOURCE_PATH =
-      "/runtime/h2o-scoring-engine-base-0.4.10.jar";
   private static final String ENGINE_BASE_JAR_NAME = "scoring-engine-base.jar";
 
   private final Path modelJarPath;
@@ -39,10 +37,10 @@ public class ScoringEngineBuildingStep {
     this.modelJarPath = modelJarPath;
   }
 
-  public Path buildScoringEngine(Path scoringEngineDir) throws EngineBuildingException {
+  public Path buildScoringEngine(Path scoringEngineDir, String engineBaseJarResourcePath) throws EngineBuildingException {
     try {
       LOGGER.info("Creating scoring engine JAR for model: " + modelJarPath);
-      Path scoringEngineJar = buildScoringEngine(modelJarPath, scoringEngineDir);
+      Path scoringEngineJar = buildScoringEngine(modelJarPath, engineBaseJarResourcePath, scoringEngineDir);
       LOGGER.info("Generated JAR: " + scoringEngineJar);
       return scoringEngineJar;
     } catch (IOException e) {
@@ -51,10 +49,10 @@ public class ScoringEngineBuildingStep {
     }
   }
 
-  private Path buildScoringEngine(Path modelJarPath, Path targetDir) throws IOException {
+  private Path buildScoringEngine(Path modelJarPath, String engineBaseResourcePath, Path targetDir) throws IOException {
     UpdatableJar engineJar = new UpdatableJar(SCORING_ENGINE_FILE_NAME, targetDir);
     Path engineJarPath =
-        engineJar.addJarContent(createTemplateJar(ENGINE_BASE_RESOURCE_PATH, targetDir))
+        engineJar.addJarContent(createTemplateJar(engineBaseResourcePath, targetDir))
             .addUncompressedLibJar(modelJarPath).getJarPath();
     engineJar.close();
     return engineJarPath;

@@ -13,8 +13,8 @@
  */
 package org.trustedanalytics.h2oscoringengine.publisher.steps;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,6 +30,8 @@ import org.trustedanalytics.h2oscoringengine.publisher.TestCompilationResourcesB
 
 public class ScoringEngineBuildingStepTest {
   
+  private String engineBaseResourcePath = "/runtime/h2o-scoring-engine-base-0.4.10.jar";
+  private String invalidResourcePath = "/sajfdk/dkgjfk.jar";
   private Path compiledClasses;
   private Path jarDir;
   private Path expectedScoringEngineDir;
@@ -52,7 +54,7 @@ public class ScoringEngineBuildingStepTest {
     ScoringEngineBuildingStep step = new ModelPackagingStep(compiledClasses).packageModel(jarDir);
     
     // when
-    Path scoringEngineJar = step.buildScoringEngine(expectedScoringEngineDir);
+    Path scoringEngineJar = step.buildScoringEngine(expectedScoringEngineDir, engineBaseResourcePath);
     
     // then
     assertThat(scoringEngineJar.toString(), endsWith(".jar"));
@@ -66,7 +68,19 @@ public class ScoringEngineBuildingStepTest {
     // when
     // then
     thrown.expect(EngineBuildingException.class);
-    step.buildScoringEngine(invalidDirForScoringEngine);
+    step.buildScoringEngine(invalidDirForScoringEngine, engineBaseResourcePath);
+    
+  }
+  
+  @Test
+  public void buildScoringEngine_resourceNotFound_exceptionThrown() throws EngineBuildingException {
+    //given
+    ScoringEngineBuildingStep step = new ModelPackagingStep(compiledClasses).packageModel(jarDir);
+    
+    //when
+    //then
+    thrown.expect(EngineBuildingException.class);
+    step.buildScoringEngine(expectedScoringEngineDir, invalidResourcePath);
     
   }
 

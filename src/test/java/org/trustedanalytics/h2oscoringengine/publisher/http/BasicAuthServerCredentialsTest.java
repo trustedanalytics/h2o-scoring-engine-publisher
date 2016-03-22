@@ -13,9 +13,9 @@
  */
 package org.trustedanalytics.h2oscoringengine.publisher.http;
 
-import static org.mockito.Mockito.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;

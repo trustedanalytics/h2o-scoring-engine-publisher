@@ -16,8 +16,11 @@ package org.trustedanalytics.h2oscoringengine.publisher.http;
 import org.apache.commons.codec.binary.Base64;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class BasicAuthServerCredentials {
 
   private String host;

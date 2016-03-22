@@ -31,12 +31,14 @@ public class Publisher {
   private final RestTemplate restTemplate;
   private final String cfApiUrl;
   private final BasicAuthServerCredentials appBroker;
+  private final String engineBaseResourcePath;
 
-  public Publisher(RestTemplate restTemplate, String cfApiUrl, BasicAuthServerCredentials appBroker)
+  public Publisher(RestTemplate restTemplate, String cfApiUrl, BasicAuthServerCredentials appBroker, String engineBaseJar)
       throws EnginePublicationException {
     this.restTemplate = restTemplate;
     this.cfApiUrl = cfApiUrl;
     this.appBroker = appBroker;
+    this.engineBaseResourcePath = engineBaseJar;
   }
 
   public void publish(PublishRequest request, String technicalSpaceGuid)
@@ -72,7 +74,7 @@ public class Publisher {
     return h2oResourcesDownloadingStep
         .downloadResources(h2oFilesDownloader, modelName, workingDir.getH2oResourcesPath())
         .compileModel(workingDir.getCompiledModelPath()).packageModel(workingDir.getModelJarPath())
-        .buildScoringEngine(workingDir.getScoringEngineJarDir());
+        .buildScoringEngine(workingDir.getScoringEngineJarDir(), engineBaseResourcePath);
   }
 
   private void publishToMarketplace(Path appBits, String appName, String technicalSpaceGuid,

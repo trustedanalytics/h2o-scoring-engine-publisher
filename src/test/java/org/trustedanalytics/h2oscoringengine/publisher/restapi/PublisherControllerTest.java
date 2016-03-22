@@ -13,13 +13,11 @@
  */
 package org.trustedanalytics.h2oscoringengine.publisher.restapi;
 
-import static org.mockito.Mockito.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.Publisher;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
 

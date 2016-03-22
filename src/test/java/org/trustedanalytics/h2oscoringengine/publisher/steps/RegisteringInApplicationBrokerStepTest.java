@@ -13,10 +13,14 @@
  */
 package org.trustedanalytics.h2oscoringengine.publisher.steps;
 
-import static org.mockito.Mockito.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.trustedanalytics.h2oscoringengine.publisher.http.CloudFoundryEndpoints.APP_BROKER_CATALOG_ENDPOINT;
+
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpEntity;

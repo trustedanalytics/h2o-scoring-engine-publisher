@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.trustedanalytics.h2oscoringengine.publisher.steps.ModelCompilationStep;
-import org.trustedanalytics.h2oscoringengine.publisher.steps.ModelPackagingStep;
 
 public class TestCompilationResourcesBuilder {
 

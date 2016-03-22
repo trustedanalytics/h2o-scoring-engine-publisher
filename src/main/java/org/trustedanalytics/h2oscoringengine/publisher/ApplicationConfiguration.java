@@ -33,9 +33,10 @@ public class ApplicationConfiguration {
 
   @Bean
   public Publisher publisher(OAuth2RestTemplate oAuth2RestTemplate,
-      @NotNull @Value("${publisher.cfApi}") String cfApi, BasicAuthServerCredentials appBroker)
+      @NotNull @Value("${publisher.cfApi}") String cfApi, BasicAuthServerCredentials appBroker,
+      @NotNull @Value("${publisher.engineBaseJar.resourcePath}") String engineBaseJarPath)
       throws EnginePublicationException {
-    return new Publisher(oAuth2RestTemplate, cfApi, appBroker);
+    return new Publisher(oAuth2RestTemplate, cfApi, appBroker, engineBaseJarPath);
   }
 
   @Bean

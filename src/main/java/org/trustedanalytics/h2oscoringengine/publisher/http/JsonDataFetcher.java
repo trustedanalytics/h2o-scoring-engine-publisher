@@ -15,13 +15,13 @@ package org.trustedanalytics.h2oscoringengine.publisher.http;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class JsonDataFetcher {
 
-  private JsonDataFetcher() {}
+  private JsonDataFetcher() {
+  }
 
   public static String getStringValue(String json, String valuePath) throws IOException {
     JsonNode root = getJsonRootNode(json);

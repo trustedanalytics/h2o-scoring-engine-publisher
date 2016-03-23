@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
+import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
 
 @Configuration
@@ -34,9 +35,11 @@ public class ApplicationConfiguration {
   @Bean
   public Publisher publisher(OAuth2RestTemplate oAuth2RestTemplate,
       @NotNull @Value("${publisher.cfApi}") String cfApi, BasicAuthServerCredentials appBroker,
-      @NotNull @Value("${publisher.engineBaseJar.resourcePath}") String engineBaseJarPath)
+      @NotNull @Value("${publisher.engineBaseJar.resourcePath}") String engineBaseJarPath,
+      @NotNull @Value("${publisher.technicalSpaceGuid}") String technicalSpaceGuid)
       throws EnginePublicationException {
-    return new Publisher(oAuth2RestTemplate, cfApi, appBroker, engineBaseJarPath);
+    return new Publisher(oAuth2RestTemplate, new RestTemplate(), new RestTemplate(), cfApi,
+        appBroker, engineBaseJarPath, technicalSpaceGuid);
   }
 
   @Bean

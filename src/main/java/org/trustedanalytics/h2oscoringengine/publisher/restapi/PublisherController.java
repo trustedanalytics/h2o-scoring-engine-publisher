@@ -35,20 +35,17 @@ public class PublisherController {
 
   private final Publisher publisher;
 
-  private String technicalSpaceGuid;
-
   @Autowired
   public PublisherController(Publisher publisher,
       @Value("${publisher.technicalSpaceGuid}") @NotNull String technicalSpaceGuid) {
     this.publisher = publisher;
-    this.technicalSpaceGuid = technicalSpaceGuid;
   }
 
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "/engine")
   public void publish(@Valid @RequestBody PublishRequest publishRequest)
       throws EnginePublicationException, EngineBuildingException {
     LOGGER.info("Got publish request: " + publishRequest.toString());
-    publisher.publish(publishRequest, technicalSpaceGuid);
+    publisher.publish(publishRequest);
   }
 
 }

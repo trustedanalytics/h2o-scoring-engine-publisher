@@ -44,7 +44,7 @@ public class PublisherControllerTest {
     controller.publish(testPublishRequest);
 
     // then
-    verify(publisherMock).publish(testPublishRequest, testSpaceGuid);
+    verify(publisherMock).publish(testPublishRequest);
   }
 
 }

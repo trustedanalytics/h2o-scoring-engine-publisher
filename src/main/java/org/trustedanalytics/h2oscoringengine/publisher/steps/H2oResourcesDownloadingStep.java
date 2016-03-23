@@ -21,9 +21,9 @@ import org.trustedanalytics.h2oscoringengine.publisher.http.FilesDownloader;
 
 public class H2oResourcesDownloadingStep {
 
-  static final String H2O_SERVER_MODEL_PATH_PREFIX = "/3/Models.java/";
-  static final String H2O_SERVER_LIB_PATH = "/3/h2o-genmodel.jar";
-  static final String H2O_LIB_FILE_NAME = "genmodel.jar";
+  public static final String H2O_SERVER_MODEL_PATH_PREFIX = "/3/Models.java/";
+  public static final String H2O_SERVER_LIB_PATH = "/3/h2o-genmodel.jar";
+  public static final String H2O_LIB_FILE_NAME = "genmodel.jar";
 
   public ModelCompilationStep downloadResources(FilesDownloader h2oFilesDownloader,
       String modelName, Path targetDirectory) throws EngineBuildingException {

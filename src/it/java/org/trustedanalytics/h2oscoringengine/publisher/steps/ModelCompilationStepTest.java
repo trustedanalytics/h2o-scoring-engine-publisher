@@ -42,7 +42,7 @@ public class ModelCompilationStepTest {
   @Before
   public void setUp() throws IOException {
     TestCompilationResourcesBuilder resourcesBuilder = new TestCompilationResourcesBuilder();
-    this.testModelJavaFile = resourcesBuilder.prepareModelJavaFile();
+    this.testModelJavaFile = resourcesBuilder.prepareModelJavaFile("model");
     this.testLibFile = resourcesBuilder.prepareLibraryFile();
     this.testModelJavaFileWithCompilationError = resourcesBuilder.prepareModelJavaFileWithCompilationError();
     this.expectedClassesDir = Files.createTempDirectory("h2o-publisher-test");

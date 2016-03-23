@@ -28,24 +28,31 @@ import org.trustedanalytics.h2oscoringengine.publisher.steps.H2oResourcesDownloa
 
 public class Publisher {
 
-  private final RestTemplate restTemplate;
+  private final RestTemplate cfRestTemplate;
+  private final RestTemplate h2oServerRestTemplate;
+  private final RestTemplate appBrokerRestTemplate;
   private final String cfApiUrl;
   private final BasicAuthServerCredentials appBroker;
   private final String engineBaseResourcePath;
+  private final String technicalSpaceGuid;
 
-  public Publisher(RestTemplate restTemplate, String cfApiUrl, BasicAuthServerCredentials appBroker, String engineBaseJar)
+  public Publisher(RestTemplate restTemplate, RestTemplate h2oServerRestTemplate, RestTemplate appBrokerRestTemplate, String cfApiUrl,
+      BasicAuthServerCredentials appBroker, String engineBaseJar, String technicalSpaceGuid)
       throws EnginePublicationException {
-    this.restTemplate = restTemplate;
+    this.cfRestTemplate = restTemplate;
     this.cfApiUrl = cfApiUrl;
     this.appBroker = appBroker;
     this.engineBaseResourcePath = engineBaseJar;
+    this.h2oServerRestTemplate = h2oServerRestTemplate;
+    this.appBrokerRestTemplate = appBrokerRestTemplate;
+    this.technicalSpaceGuid = technicalSpaceGuid;
   }
 
-  public void publish(PublishRequest request, String technicalSpaceGuid)
+  public void publish(PublishRequest request)
       throws EnginePublicationException, EngineBuildingException {
 
     String appName = request.getModelName();
-    CheckingIfAppExistsStep appExistsStep = new CheckingIfAppExistsStep(cfApiUrl, restTemplate);
+    CheckingIfAppExistsStep appExistsStep = new CheckingIfAppExistsStep(cfApiUrl, cfRestTemplate);
     if (appExistsStep.check(appName, technicalSpaceGuid)) {
       throw new EnginePublicationException(
           "Cannot publish app " + appName + " to CloudFoundry. App already exists.");
@@ -60,7 +67,8 @@ public class Publisher {
     }
 
     Path scoringEngineJar = buildScoringEngineJar(workingDir,
-        new FilesDownloader(request.getH2oCredentials(), new RestTemplate()), request.getModelName());
+        new FilesDownloader(request.getH2oCredentials(), h2oServerRestTemplate),
+        request.getModelName());
 
     publishToMarketplace(scoringEngineJar, appName, technicalSpaceGuid, request.getOrgGuid());
 
@@ -80,10 +88,11 @@ public class Publisher {
   private void publishToMarketplace(Path appBits, String appName, String technicalSpaceGuid,
       String orgGuid) throws EnginePublicationException {
 
-    AppRecordCreatingStep appRecordCreatingStep = new AppRecordCreatingStep(cfApiUrl, restTemplate);
+    AppRecordCreatingStep appRecordCreatingStep =
+        new AppRecordCreatingStep(cfApiUrl, cfRestTemplate);
     appRecordCreatingStep.createAppRecord(technicalSpaceGuid, appName)
         .createAppRoute(technicalSpaceGuid, appName).uploadBits(appBits)
-        .register(appBroker, appName, "Scoring engine based on H2O model")
+        .register(appBroker, appBrokerRestTemplate, appName, "Scoring engine based on H2O model")
         .addServicePlanVisibility(orgGuid, appName);
   }
 }

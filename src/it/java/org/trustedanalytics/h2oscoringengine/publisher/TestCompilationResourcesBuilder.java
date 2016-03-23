@@ -29,16 +29,19 @@ public class TestCompilationResourcesBuilder {
     this.tempDir = Files.createTempDirectory("");
   }
 
-  public Path prepareModelJavaFile() throws IOException {
+  public Path prepareModelJavaFile(String className) throws IOException {
     StringBuffer h2oModelSourceCode = new StringBuffer();
     h2oModelSourceCode.append("import hex.genmodel.GenModel;");
-    h2oModelSourceCode.append("public class model extends GenModel {");
-    h2oModelSourceCode.append("public model() { super(new String[0],new String[0][0]); }");
-    h2oModelSourceCode.append("public hex.ModelCategory getModelCategory() { return hex.ModelCategory.Multinomial; }");
+    h2oModelSourceCode.append("public class " + className + " extends GenModel {");
+    h2oModelSourceCode
+        .append("public " + className + "() { super(new String[0],new String[0][0]); }");
+    h2oModelSourceCode.append(
+        "public hex.ModelCategory getModelCategory() { return hex.ModelCategory.Multinomial; }");
     h2oModelSourceCode.append("public final double[] score0( double[] data, double[] preds ) {");
     h2oModelSourceCode.append("return new double[0];");
     h2oModelSourceCode.append("}");
-    h2oModelSourceCode.append("public String getUUID() { return Long.toString(1406937660108778282L); }");
+    h2oModelSourceCode
+        .append("public String getUUID() { return Long.toString(1406937660108778282L); }");
     h2oModelSourceCode.append("}");
 
     Path sourceFile = tempDir.resolve("model.java");
@@ -56,31 +59,34 @@ public class TestCompilationResourcesBuilder {
     Path libFile = tempDir.resolve(libDependency);
     InputStream lib = this.getClass().getResourceAsStream(libDependencyPath);
     Files.copy(lib, libFile);
-    
+
     return libFile;
   }
-  
-  public Path prepareModelJavaFileWithCompilationError() throws IOException{
+
+  public Path prepareModelJavaFileWithCompilationError() throws IOException {
     StringBuffer h2oModelSourceCode = new StringBuffer();
     h2oModelSourceCode.append("import hex.genmodel.GenModel;");
     h2oModelSourceCode.append("public class badmodel extends GenModel {");
     h2oModelSourceCode.append("public model() { super(new String[0],new String[0][0]); }");
-    h2oModelSourceCode.append("public hex.ModelCategory getModelCategory() { return hex.ModelCategory.Multinomial; }");
+    h2oModelSourceCode.append(
+        "public hex.ModelCategory getModelCategory() { return hex.ModelCategory.Multinomial; }");
     h2oModelSourceCode.append("public final double[] score0( double[] data, double[] preds ) {");
     h2oModelSourceCode.append("return new double[0];");
     h2oModelSourceCode.append("}");
-    h2oModelSourceCode.append("public String getUUID() { return Long.toString(1406937660108778282L); }");
+    h2oModelSourceCode
+        .append("public String getUUID() { return Long.toString(1406937660108778282L); }");
 
     Path sourceFile = tempDir.resolve("badmodel.java");
     return Files.write(sourceFile, h2oModelSourceCode.toString().getBytes());
   }
-  
-  public Path prepareCompiledModelClasses() throws EngineBuildingException, IOException{
-    ModelCompilationStep compilationStep = new ModelCompilationStep(
-        this.prepareModelJavaFile(), this.prepareLibraryFile());
+
+  public Path prepareCompiledModelClasses(String modelName)
+      throws EngineBuildingException, IOException {
+    ModelCompilationStep compilationStep =
+        new ModelCompilationStep(this.prepareModelJavaFile(modelName), this.prepareLibraryFile());
     Path compiledClasses = Files.createTempDirectory("h2o-publisher-test-classes");
     compilationStep.compileModel(compiledClasses);
-    
+
     return compiledClasses;
   }
 }

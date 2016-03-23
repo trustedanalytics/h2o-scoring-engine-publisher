@@ -54,7 +54,7 @@ public class ModelPackagingStepTest {
   @Before
   public void setUp() throws IOException, EngineBuildingException {
     TestCompilationResourcesBuilder resourcesBuilder = new TestCompilationResourcesBuilder();
-    this.compiledClasses = resourcesBuilder.prepareCompiledModelClasses();
+    this.compiledClasses = resourcesBuilder.prepareCompiledModelClasses("model");
     this.expectedJarDir = Files.createTempDirectory("h2o-publisher-test-jar");
   }
 

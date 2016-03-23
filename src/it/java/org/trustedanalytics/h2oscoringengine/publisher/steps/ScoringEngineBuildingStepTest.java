@@ -30,7 +30,7 @@ import org.trustedanalytics.h2oscoringengine.publisher.TestCompilationResourcesB
 
 public class ScoringEngineBuildingStepTest {
   
-  private String engineBaseResourcePath = "/runtime/h2o-scoring-engine-base-0.4.10.jar";
+  private String engineBaseResourcePath = "/runtime/h2o-scoring-engine-base-0.4.11.jar";
   private String invalidResourcePath = "/sajfdk/dkgjfk.jar";
   private Path compiledClasses;
   private Path jarDir;
@@ -43,7 +43,7 @@ public class ScoringEngineBuildingStepTest {
   @Before
   public void setUp() throws IOException, EngineBuildingException {
     TestCompilationResourcesBuilder resourcesBuilder = new TestCompilationResourcesBuilder();
-    this.compiledClasses = resourcesBuilder.prepareCompiledModelClasses();
+    this.compiledClasses = resourcesBuilder.prepareCompiledModelClasses("model");
     this.jarDir = Files.createTempDirectory("h2o-publisher-test-jar");
     this.expectedScoringEngineDir = Files.createTempDirectory("h2o-publisher-test-engine");
   }

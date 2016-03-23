@@ -38,7 +38,7 @@ public class RegisteringInApplicationBrokerStepTest {
   private final String testServiceName = "sakj";
   private final String testServiceDescription = "Asklj aslkjgka akdjgakgj adkjgj";
   private BasicAuthServerCredentials testCredentials =
-      new BasicAuthServerCredentials("somehost", "username", "password");
+      new BasicAuthServerCredentials("http://somehost", "username", "password");
   private String appBrokerEndpoint = testCredentials.getHost() + APP_BROKER_CATALOG_ENDPOINT;
   
   private RestTemplate cfRestTemplateMock = mock(RestTemplate.class);
@@ -51,10 +51,10 @@ public class RegisteringInApplicationBrokerStepTest {
   public void register_callToAppBrokerOccured() throws Exception {
     // given
     RegisteringInApplicationBrokerStep step = new RegisteringInApplicationBrokerStep(testAppGuid,
-        testCfApi, cfRestTemplateMock, basicRestTemplateMock);
+        testCfApi, cfRestTemplateMock);
 
     // when
-    step.register(testCredentials, testServiceName, testServiceDescription);
+    step.register(testCredentials, basicRestTemplateMock, testServiceName, testServiceDescription);
     ArgumentCaptor<HttpEntity> requestCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 
     // then

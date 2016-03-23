@@ -14,12 +14,10 @@
 package org.trustedanalytics.h2oscoringengine.publisher.restapi;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,8 +34,7 @@ public class PublisherController {
   private final Publisher publisher;
 
   @Autowired
-  public PublisherController(Publisher publisher,
-      @Value("${publisher.technicalSpaceGuid}") @NotNull String technicalSpaceGuid) {
+  public PublisherController(Publisher publisher) {
     this.publisher = publisher;
   }
 

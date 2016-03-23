@@ -25,7 +25,6 @@ public class PublisherControllerTest {
 
   private Publisher publisherMock = mock(Publisher.class);
   private PublishRequest testPublishRequest;
-  private String testSpaceGuid = "asjkf-afja";
 
   @Before
   public void setUp() {
@@ -38,7 +37,7 @@ public class PublisherControllerTest {
   @Test
   public void publish_callsPublisher() throws Exception {
     // given
-    PublisherController controller = new PublisherController(publisherMock, testSpaceGuid);
+    PublisherController controller = new PublisherController(publisherMock);
 
     // when
     controller.publish(testPublishRequest);

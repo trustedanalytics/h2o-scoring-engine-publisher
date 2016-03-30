@@ -32,20 +32,20 @@ public class Publisher {
   private final RestTemplate h2oServerRestTemplate;
   private final RestTemplate appBrokerRestTemplate;
   private final String cfApiUrl;
-  private final BasicAuthServerCredentials appBroker;
+  private final BasicAuthServerCredentials appBrokerCredentials;
   private final String engineBaseResourcePath;
   private final String technicalSpaceGuid;
 
-  public Publisher(RestTemplate restTemplate, RestTemplate h2oServerRestTemplate, RestTemplate appBrokerRestTemplate, String cfApiUrl,
-      BasicAuthServerCredentials appBroker, String engineBaseJar, String technicalSpaceGuid)
+  public Publisher(CfConnectionData cfConnectionData, RestTemplate h2oServerRestTemplate,
+      AppBrokerConnectionData appBrokerConnectionData, String engineBaseJar)
       throws EnginePublicationException {
-    this.cfRestTemplate = restTemplate;
-    this.cfApiUrl = cfApiUrl;
-    this.appBroker = appBroker;
+    this.cfRestTemplate = cfConnectionData.getCfRestTemplate();
+    this.cfApiUrl = cfConnectionData.getCfApiUrl();
+    this.appBrokerCredentials = appBrokerConnectionData.getAppBrokerCredentials();
     this.engineBaseResourcePath = engineBaseJar;
     this.h2oServerRestTemplate = h2oServerRestTemplate;
-    this.appBrokerRestTemplate = appBrokerRestTemplate;
-    this.technicalSpaceGuid = technicalSpaceGuid;
+    this.appBrokerRestTemplate = appBrokerConnectionData.getAppBrokerRestTemplate();
+    this.technicalSpaceGuid = cfConnectionData.getTechnicalSpaceGuid();
   }
 
   public void publish(PublishRequest request)
@@ -92,7 +92,7 @@ public class Publisher {
         new AppRecordCreatingStep(cfApiUrl, cfRestTemplate);
     appRecordCreatingStep.createAppRecord(technicalSpaceGuid, appName)
         .createAppRoute(technicalSpaceGuid, appName).uploadBits(appBits)
-        .register(appBroker, appBrokerRestTemplate, appName, "Scoring engine based on H2O model")
+        .register(appBrokerCredentials, appBrokerRestTemplate, appName, "Scoring engine based on H2O model")
         .addServicePlanVisibility(orgGuid, appName);
   }
 }

@@ -11,28 +11,26 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.trustedanalytics.h2oscoringengine.publisher.restapi;
+package org.trustedanalytics.h2oscoringengine.publisher;
 
-import javax.validation.constraints.NotNull;
-
+import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+public class AppBrokerConnectionData {
 
-@Setter
-@Getter
-@ToString
-public class PublishRequest {
+  private final RestTemplate appBrokerRestTemplate;
+  private final BasicAuthServerCredentials appBrokerCredentials;
 
-  @NotNull
-  private BasicAuthServerCredentials h2oCredentials;
+  public AppBrokerConnectionData(RestTemplate appBrokerRestTemplate, BasicAuthServerCredentials appBrokerCredentials) {
+    this.appBrokerRestTemplate = appBrokerRestTemplate;
+    this.appBrokerCredentials = appBrokerCredentials;
+  }
 
-  @NotNull
-  private String modelName;
+  public BasicAuthServerCredentials getAppBrokerCredentials() {
+    return appBrokerCredentials;
+  }
 
-  @NotNull
-  private String orgGuid;
-
+  public RestTemplate getAppBrokerRestTemplate() {
+    return appBrokerRestTemplate;
+  }
 }

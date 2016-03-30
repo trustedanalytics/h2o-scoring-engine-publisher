@@ -17,9 +17,11 @@ import org.apache.commons.codec.binary.Base64;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class BasicAuthServerCredentials {
 
   private String host;

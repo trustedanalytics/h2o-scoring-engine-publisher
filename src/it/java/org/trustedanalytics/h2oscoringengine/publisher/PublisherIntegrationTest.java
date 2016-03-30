@@ -111,10 +111,11 @@ public class PublisherIntegrationTest {
   @Test
   public void publish_cfAppExists_exceptionThrown() throws Exception {
     // given
-    Publisher publisher = new Publisher(cfRestTemplate, h2oRestTemplate,
-        appBrokerRestTemplate, testCfApi, new BasicAuthServerCredentials(testAppBrokerHost,
-            testAppBrokerUsername, testAppBrokerPassword),
-        engineBaseResourcePath, testTechnicalSpaceGuid);
+    Publisher publisher = new Publisher(
+        new CfConnectionData(cfRestTemplate, testCfApi, testTechnicalSpaceGuid), h2oRestTemplate,
+        new AppBrokerConnectionData(appBrokerRestTemplate, new BasicAuthServerCredentials(
+            testAppBrokerHost, testAppBrokerUsername, testAppBrokerPassword)),
+        engineBaseResourcePath);
     cfServerMock.expect(requestTo(testCfApi + appExistsRequest)).andExpect(method(HttpMethod.GET))
         .andRespond(withSuccess("{\"total_results\": 1}", MediaType.APPLICATION_JSON));
 
@@ -128,10 +129,11 @@ public class PublisherIntegrationTest {
   @Test
   public void publish_allRequestsOccured() throws Exception {
     // given
-    Publisher publisher = new Publisher(cfRestTemplate, h2oRestTemplate,
-        appBrokerRestTemplate, testCfApi, new BasicAuthServerCredentials(testAppBrokerHost,
-            testAppBrokerUsername, testAppBrokerPassword),
-        engineBaseResourcePath, testTechnicalSpaceGuid);
+    Publisher publisher = new Publisher(
+        new CfConnectionData(cfRestTemplate, testCfApi, testTechnicalSpaceGuid), h2oRestTemplate,
+        new AppBrokerConnectionData(appBrokerRestTemplate, new BasicAuthServerCredentials(
+            testAppBrokerHost, testAppBrokerUsername, testAppBrokerPassword)),
+        engineBaseResourcePath);
     setCfApiExpectedCalls();
     setH2oServerExpectedCalls();
     setAppBrokerExpectedCalls();
@@ -177,7 +179,8 @@ public class PublisherIntegrationTest {
         withSuccess("{\"resources\":[{\"metadata\":{\"guid\":\"" + testPlanGuid + "\"}}]}",
             MediaType.APPLICATION_JSON));
     // setting service plan visibility
-    cfServerMock.expect(requestTo(testCfApi + servicePlanVisibilityEndpoint)).andRespond(withSuccess());
+    cfServerMock.expect(requestTo(testCfApi + servicePlanVisibilityEndpoint))
+        .andRespond(withSuccess());
 
   }
 

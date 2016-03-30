@@ -38,8 +38,9 @@ public class ApplicationConfiguration {
       @NotNull @Value("${publisher.engineBaseJar.resourcePath}") String engineBaseJarPath,
       @NotNull @Value("${publisher.technicalSpaceGuid}") String technicalSpaceGuid)
       throws EnginePublicationException {
-    return new Publisher(oAuth2RestTemplate, new RestTemplate(), new RestTemplate(), cfApi,
-        appBroker, engineBaseJarPath, technicalSpaceGuid);
+
+    return new Publisher(new CfConnectionData(oAuth2RestTemplate, cfApi, technicalSpaceGuid),
+        new RestTemplate(), new AppBrokerConnectionData(new RestTemplate(), appBroker), engineBaseJarPath);
   }
 
   @Bean

@@ -5,3 +5,5 @@ applications:
   services:
   - sso
   - marketplace-register-service
+  env:
+    VERSION: ${version}

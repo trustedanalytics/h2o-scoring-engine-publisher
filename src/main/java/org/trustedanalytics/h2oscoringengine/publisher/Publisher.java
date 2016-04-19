@@ -21,6 +21,7 @@ import org.trustedanalytics.h2oscoringengine.publisher.filesystem.FsDirectoryOpe
 import org.trustedanalytics.h2oscoringengine.publisher.filesystem.PublisherWorkingDirectory;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
 import org.trustedanalytics.h2oscoringengine.publisher.http.FilesDownloader;
+import org.trustedanalytics.h2oscoringengine.publisher.restapi.DownloadRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.restapi.PublishRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.steps.AppRecordCreatingStep;
 import org.trustedanalytics.h2oscoringengine.publisher.steps.CheckingIfAppExistsStep;
@@ -58,31 +59,36 @@ public class Publisher {
           "Cannot publish app " + appName + " to CloudFoundry. App already exists.");
     }
 
-    PublisherWorkingDirectory workingDir;
-    try {
-      workingDir =
-          new PublisherWorkingDirectory(request.getModelName(), new FsDirectoryOperations());
-    } catch (IOException e) {
-      throw new EnginePublicationException("Unable to create dir for publisher: ", e);
-    }
-
-    Path scoringEngineJar = buildScoringEngineJar(workingDir,
+    Path scoringEngineJar = buildScoringEngineJar(
         new FilesDownloader(request.getH2oCredentials(), h2oServerRestTemplate),
         request.getModelName());
 
     publishToMarketplace(scoringEngineJar, appName, technicalSpaceGuid, request.getOrgGuid());
-
   }
 
-  private Path buildScoringEngineJar(PublisherWorkingDirectory workingDir,
-      FilesDownloader h2oFilesDownloader, String modelName)
-      throws EnginePublicationException, EngineBuildingException {
+  public Path getScoringEngineJar(DownloadRequest request) throws EngineBuildingException {
+    return buildScoringEngineJar(
+        new FilesDownloader(request.getH2oCredentials(), h2oServerRestTemplate),
+        request.getModelName());
+  }
 
-    H2oResourcesDownloadingStep h2oResourcesDownloadingStep = new H2oResourcesDownloadingStep();
-    return h2oResourcesDownloadingStep
-        .downloadResources(h2oFilesDownloader, modelName, workingDir.getH2oResourcesPath())
-        .compileModel(workingDir.getCompiledModelPath()).packageModel(workingDir.getModelJarPath())
-        .buildScoringEngine(workingDir.getScoringEngineJarDir(), engineBaseResourcePath);
+  private Path buildScoringEngineJar(FilesDownloader h2oFilesDownloader, String modelName)
+      throws EngineBuildingException {
+
+    try {
+      PublisherWorkingDirectory workingDir =
+          new PublisherWorkingDirectory(modelName, new FsDirectoryOperations());
+
+      H2oResourcesDownloadingStep h2oResourcesDownloadingStep = new H2oResourcesDownloadingStep();
+      return h2oResourcesDownloadingStep
+          .downloadResources(h2oFilesDownloader, modelName, workingDir.getH2oResourcesPath())
+          .compileModel(workingDir.getCompiledModelPath())
+          .packageModel(workingDir.getModelJarPath())
+          .buildScoringEngine(workingDir.getScoringEngineJarDir(), engineBaseResourcePath);
+
+    } catch (IOException e) {
+      throw new EngineBuildingException("Unable to create dir for publisher: ", e);
+    }
   }
 
   private void publishToMarketplace(Path appBits, String appName, String technicalSpaceGuid,
@@ -92,7 +98,8 @@ public class Publisher {
         new AppRecordCreatingStep(cfApiUrl, cfRestTemplate);
     appRecordCreatingStep.createAppRecord(technicalSpaceGuid, appName)
         .createAppRoute(technicalSpaceGuid, appName).uploadBits(appBits)
-        .register(appBrokerCredentials, appBrokerRestTemplate, appName, "Scoring engine based on H2O model")
+        .register(appBrokerCredentials, appBrokerRestTemplate, appName,
+            "Scoring engine based on H2O model")
         .addServicePlanVisibility(orgGuid, appName);
   }
 }

@@ -43,27 +43,24 @@ public class ModelPackagingStep {
   }
 
   private Path createJar(Path classesDir, Path fileForJar) throws EngineBuildingException {
-    JarOutputStream jar;
 
-    LOGGER.info("Creating model JAR for classes directory: " + classesDir);
-    try {
-      jar = new JarOutputStream(new FileOutputStream(fileForJar.toString()));
-
-      Files.walk(classesDir).forEach(classFile -> addClassFileToJar(jar, classesDir));
-
+    try (JarOutputStream jar = new JarOutputStream(new FileOutputStream(fileForJar.toString()))) {
+      Files.walk(classesDir).forEach(classFile -> addClassFileToJar(jar, classFile));
       jar.flush();
-      jar.close();
     } catch (IOException | DirectoryTraversingException e) {
       LOGGER.error("Error while creating model jar file: ", e);
       throw new EngineBuildingException("Error while creating model jar file ", e);
-    }
+    } 
+    
     return fileForJar;
   }
 
   void addClassFileToJar(JarOutputStream jar, Path classFile) {
     try {
       if (classFile.toString().endsWith(".class")) {
+        LOGGER.debug("Adding file " + classFile.getFileName().toString() + " to JAR archive.");
         jar.putNextEntry(new JarEntry(classFile.getFileName().toString()));
+        jar.write(Files.readAllBytes(classFile));
         jar.closeEntry();
       }
     } catch (IOException e) {

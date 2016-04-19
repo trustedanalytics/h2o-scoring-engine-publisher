@@ -68,6 +68,8 @@ public class ScoringEngineBuildingStep {
     Path templateJar = targetDir.resolve(ENGINE_BASE_JAR_NAME);
     InputStream templateResource = this.getClass().getResourceAsStream(baseJarResourcePath);
     Files.copy(templateResource, templateJar);
+    templateResource.close();
+    
     return new JarFile(templateJar.toFile());
   }
 

@@ -18,9 +18,11 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
@@ -38,11 +40,20 @@ public class PublisherController {
     this.publisher = publisher;
   }
 
-  @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "/rest/engine")
+  @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
+      value = "/rest/engine")
   public void publish(@Valid @RequestBody PublishRequest publishRequest)
       throws EnginePublicationException, EngineBuildingException {
-    LOGGER.info("Got publish request: " + publishRequest.toString());
+    LOGGER.info("Got publish request: " + publishRequest);
     publisher.publish(publishRequest);
+  }
+
+  @RequestMapping(method = RequestMethod.GET, consumes = "application/json", value = "/rest/engine", produces = "application/java-archive")
+  @ResponseBody
+  public FileSystemResource downloadEngine(@Valid @RequestBody DownloadRequest downloadRequest)
+      throws EngineBuildingException {
+    LOGGER.info("Got download request: " + downloadRequest);
+    return new FileSystemResource(publisher.getScoringEngineJar(downloadRequest).toFile());
   }
 
 }

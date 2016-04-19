@@ -30,7 +30,7 @@ import org.trustedanalytics.h2oscoringengine.publisher.TestCompilationResourcesB
 
 public class ScoringEngineBuildingStepTest {
   
-  private String engineBaseResourcePath = "/runtime/h2o-scoring-engine-base-0.4.11.jar";
+  private String engineBaseResourcePath = "/runtime/h2o-scoring-engine-base-0.5.0.jar";
   private String invalidResourcePath = "/sajfdk/dkgjfk.jar";
   private Path compiledClasses;
   private Path jarDir;

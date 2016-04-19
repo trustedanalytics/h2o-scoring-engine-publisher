@@ -15,9 +15,13 @@ package org.trustedanalytics.h2oscoringengine.publisher.restapi;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
 import org.trustedanalytics.h2oscoringengine.publisher.Publisher;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
 
@@ -25,13 +29,21 @@ public class PublisherControllerTest {
 
   private Publisher publisherMock = mock(Publisher.class);
   private PublishRequest testPublishRequest;
+  private DownloadRequest testDownloadRequest;
 
   @Before
-  public void setUp() {
+  public void setUp() throws EngineBuildingException {
     testPublishRequest = new PublishRequest();
-    testPublishRequest.setH2oCredentials(new BasicAuthServerCredentials("host", "username", "password"));
+    testPublishRequest
+        .setH2oCredentials(new BasicAuthServerCredentials("host", "username", "password"));
     testPublishRequest.setModelName("some-model-name");
     testPublishRequest.setOrgGuid("some-org-guid");
+
+    testDownloadRequest = new DownloadRequest();
+    testDownloadRequest
+        .setH2oCredentials(new BasicAuthServerCredentials("host", "username", "password"));
+    testDownloadRequest.setModelName("some-model-name");
+    
   }
 
   @Test
@@ -46,4 +58,16 @@ public class PublisherControllerTest {
     verify(publisherMock).publish(testPublishRequest);
   }
 
+  @Test
+  public void downloadEngine_callsPublisher() throws Exception {
+    // given
+    PublisherController controller = new PublisherController(publisherMock);
+
+    // when
+    when(publisherMock.getScoringEngineJar(testDownloadRequest)).thenReturn(Paths.get("/tmp/"));
+    controller.downloadEngine(testDownloadRequest);
+
+    // then
+    verify(publisherMock).getScoringEngineJar(testDownloadRequest);
+  }
 }

@@ -19,7 +19,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,10 +42,9 @@ public class ModelPackagingStepTest {
   private Path compiledClasses;
   private Path expectedJarDir;
   private Path invalidClassesDir = Paths.get("sakfjasj");
-  private Path classFileMock = mock(Path.class);
+  private Path testClassFile;
+  private Path testFileWithoutClassExtension;
   private JarOutputStream jarMock = mock(JarOutputStream.class);
-  private String testClassFileName = "something.class";
-  private String testFileNameWithoutExtension = "askjajkfljkalg";
 
   @Rule
   public final ExpectedException thrown = ExpectedException.none();
@@ -56,6 +54,9 @@ public class ModelPackagingStepTest {
     TestCompilationResourcesBuilder resourcesBuilder = new TestCompilationResourcesBuilder();
     this.compiledClasses = resourcesBuilder.prepareCompiledModelClasses("model");
     this.expectedJarDir = Files.createTempDirectory("h2o-publisher-test-jar");
+
+    this.testClassFile = resourcesBuilder.prepareFileWithClassExtension();
+    this.testFileWithoutClassExtension = resourcesBuilder.prepareFileWithoutClassExtension();
   }
 
   @Test
@@ -88,12 +89,10 @@ public class ModelPackagingStepTest {
   public void addClassFileToJar_fileWithClassExtension_fileAddedToJar() throws IOException {
     // given
     ModelPackagingStep step = new ModelPackagingStep(compiledClasses);
-    when(classFileMock.toString()).thenReturn(testClassFileName);
-    when(classFileMock.getFileName()).thenReturn(Paths.get("", testClassFileName));
     ArgumentCaptor<JarEntry> jarEntryCaptor = ArgumentCaptor.forClass(JarEntry.class);
 
     // when
-    step.addClassFileToJar(jarMock, classFileMock);
+    step.addClassFileToJar(jarMock, testClassFile);
 
     // then
     verify(jarMock).putNextEntry(jarEntryCaptor.capture());
@@ -103,12 +102,10 @@ public class ModelPackagingStepTest {
   public void addClassFileToJar_fileWithoutClassExtension_fileNotAddedToJar() throws IOException {
     // given
     ModelPackagingStep step = new ModelPackagingStep(compiledClasses);
-    when(classFileMock.toString()).thenReturn(testFileNameWithoutExtension);
-    when(classFileMock.getFileName()).thenReturn(Paths.get("", testFileNameWithoutExtension));
     ArgumentCaptor<JarEntry> jarEntryCaptor = ArgumentCaptor.forClass(JarEntry.class);
 
     // when
-    step.addClassFileToJar(jarMock, classFileMock);
+    step.addClassFileToJar(jarMock, testFileWithoutClassExtension);
 
     // then
     verify(jarMock, never()).putNextEntry(jarEntryCaptor.capture());
@@ -118,15 +115,11 @@ public class ModelPackagingStepTest {
   public void addClassFileToJar_ioExceptionFromJarStream_exceptionThrown() throws IOException {
     // given
     ModelPackagingStep step = new ModelPackagingStep(compiledClasses);
-    when(classFileMock.toString()).thenReturn(testClassFileName);
-    when(classFileMock.getFileName()).thenReturn(Paths.get("", testClassFileName));
     doThrow(new IOException()).when(jarMock).closeEntry();
 
     // when
     // then
     thrown.expect(DirectoryTraversingException.class);
-    step.addClassFileToJar(jarMock, classFileMock);
+    step.addClassFileToJar(jarMock, testClassFile);
   }
-
-
 }

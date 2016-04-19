@@ -49,7 +49,7 @@ public class TestCompilationResourcesBuilder {
   }
 
   public Path prepareLibraryFile() throws IOException {
-    String libDependency = "h2o-genmodel-3.0.1.4.jar";
+    String libDependency = "h2o-genmodel-3.6.0.11.jar";
     String libDependencyPath = "/lib/" + libDependency;
     URL resource = this.getClass().getResource(libDependencyPath);
     if (null == resource) {
@@ -88,5 +88,15 @@ public class TestCompilationResourcesBuilder {
     compilationStep.compileModel(compiledClasses);
 
     return compiledClasses;
+  }
+  
+  public Path prepareFileWithClassExtension() throws IOException {
+    Path file = tempDir.resolve("some_class_file.class");
+    return Files.write(file, "some string content".getBytes());
+  }
+  
+  public Path prepareFileWithoutClassExtension() throws IOException {
+    Path file = tempDir.resolve("some_class_file.txt");
+    return Files.write(file, "some string content".getBytes());
   }
 }

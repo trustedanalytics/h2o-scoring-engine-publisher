@@ -39,6 +39,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
+import org.trustedanalytics.h2oscoringengine.publisher.restapi.DownloadRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.restapi.PublishRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.steps.H2oResourcesDownloadingStep;
 
@@ -61,9 +62,10 @@ public class PublisherIntegrationTest {
   private final String testAppBrokerUsername = "akjf";
   private final String testAppBrokerPassword = "oiup";
 
-  private String engineBaseResourcePath = "/runtime/h2o-scoring-engine-base-0.4.11.jar";
+  private String engineBaseResourcePath = "/runtime/h2o-scoring-engine-base-0.5.0.jar";
 
   private PublishRequest testPublishRequest = new PublishRequest();
+  private DownloadRequest testDownloadRequest = new DownloadRequest();
   private final String testModelName = "some_model";
   private final String testOrgGuid = "kasjf-azffd-adafd";
   private final String testTechnicalSpaceGuid = "oiouio-oiiooip";
@@ -106,6 +108,9 @@ public class PublisherIntegrationTest {
     testPublishRequest.setH2oCredentials(h2oCredentials);
     testPublishRequest.setModelName(testModelName);
     testPublishRequest.setOrgGuid(testOrgGuid);
+    
+    testDownloadRequest.setH2oCredentials(h2oCredentials);
+    testDownloadRequest.setModelName(testModelName);
   }
 
   @Test
@@ -145,6 +150,23 @@ public class PublisherIntegrationTest {
     cfServerMock.verify();
     h2oServerMock.verify();
     appBrokerMock.verify();
+  }
+
+  @Test
+  public void getScoringEngineJar_h2oRequestsOccured() throws Exception {
+    // given
+    Publisher publisher = new Publisher(
+        new CfConnectionData(cfRestTemplate, testCfApi, testTechnicalSpaceGuid), h2oRestTemplate,
+        new AppBrokerConnectionData(appBrokerRestTemplate, new BasicAuthServerCredentials(
+            testAppBrokerHost, testAppBrokerUsername, testAppBrokerPassword)),
+        engineBaseResourcePath);
+    setH2oServerExpectedCalls();
+
+    // when
+    publisher.getScoringEngineJar(testDownloadRequest);
+    
+    //then
+    h2oServerMock.verify();
   }
 
   private void setCfApiExpectedCalls() {

@@ -37,7 +37,8 @@ public class H2oResourcesDownloadingStep {
       return new ModelCompilationStep(downloadedModelPath, downloadedLibPath);
 
     } catch (IOException e) {
-      throw new EngineBuildingException("Unable to download resources for scoring engine: ", e);
+      throw new EngineBuildingException(
+          "Unable to download resources for scoring engine: " + e.getMessage(), e);
     }
   }
 

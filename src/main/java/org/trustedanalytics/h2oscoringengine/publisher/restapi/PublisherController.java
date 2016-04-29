@@ -48,7 +48,7 @@ public class PublisherController {
     publisher.publish(publishRequest);
   }
 
-  @RequestMapping(method = RequestMethod.GET, consumes = "application/json", value = "/rest/engine", produces = "application/java-archive")
+  @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "/rest/downloads", produces = "application/java-archive")
   @ResponseBody
   public FileSystemResource downloadEngine(@Valid @RequestBody DownloadRequest downloadRequest)
       throws EngineBuildingException {

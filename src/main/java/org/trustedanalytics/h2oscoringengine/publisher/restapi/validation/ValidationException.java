@@ -1,4 +1,3 @@
-package org.trustedanalytics.h2oscoringengine.publisher.restapi;
 /**
  * Copyright (c) 2015 Intel Corporation
  *
@@ -12,29 +11,18 @@ package org.trustedanalytics.h2oscoringengine.publisher.restapi;
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
+package org.trustedanalytics.h2oscoringengine.publisher.restapi.validation;
 
-import javax.validation.constraints.NotNull;
+public class ValidationException extends RuntimeException {
 
-import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
+  private static final long serialVersionUID = 3087706936319769998L;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+  public ValidationException(Throwable e) {
+    super(e);
+  }
 
-
-@Getter
-@Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-public class DownloadRequest {
-
-  @NotNull
-  private BasicAuthServerCredentials h2oCredentials;
-
-  @NotNull
-  private String modelName;
+  public ValidationException(String message) {
+    super(message);
+  }
 
 }

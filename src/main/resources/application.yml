@@ -6,11 +6,12 @@ publisher:
     username: ${vcap.services.marketplace-register-service.credentials.username:}
     password: ${vcap.services.marketplace-register-service.credentials.password:}
   engineBaseJar:
-    resourcePath: "/runtime/h2o-scoring-engine-base-0.5.0.jar"
+    resourcePath: "/runtime/h2o-scoring-engine-base-0.5.1.jar"
 
 spring.oauth2:
   client:
     accessTokenUri: ${vcap.services.sso.credentials.tokenUri:}
     clientId: ${vcap.services.sso.credentials.clientId:}
     clientSecret: ${vcap.services.sso.credentials.clientSecret:}
+
     

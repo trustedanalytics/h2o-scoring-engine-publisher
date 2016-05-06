@@ -39,7 +39,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
-import org.trustedanalytics.h2oscoringengine.publisher.restapi.DownloadRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.restapi.PublishRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.steps.H2oResourcesDownloadingStep;
 
@@ -65,7 +64,7 @@ public class PublisherIntegrationTest {
   private String engineBaseResourcePath = "/runtime/h2o-scoring-engine-base-0.5.0.jar";
 
   private PublishRequest testPublishRequest = new PublishRequest();
-  private DownloadRequest testDownloadRequest = new DownloadRequest();
+  private BasicAuthServerCredentials testH2oCredentials = new BasicAuthServerCredentials(testH2oServerUrl, testH2oUser, testH2oPassword);
   private final String testModelName = "some_model";
   private final String testOrgGuid = "kasjf-azffd-adafd";
   private final String testTechnicalSpaceGuid = "oiouio-oiiooip";
@@ -103,14 +102,9 @@ public class PublisherIntegrationTest {
     h2oServerMock = MockRestServiceServer.createServer(h2oRestTemplate);
     appBrokerMock = MockRestServiceServer.createServer(appBrokerRestTemplate);
 
-    BasicAuthServerCredentials h2oCredentials =
-        new BasicAuthServerCredentials(testH2oServerUrl, testH2oUser, testH2oPassword);
-    testPublishRequest.setH2oCredentials(h2oCredentials);
+    testPublishRequest.setH2oCredentials(testH2oCredentials);
     testPublishRequest.setModelName(testModelName);
     testPublishRequest.setOrgGuid(testOrgGuid);
-    
-    testDownloadRequest.setH2oCredentials(h2oCredentials);
-    testDownloadRequest.setModelName(testModelName);
   }
 
   @Test
@@ -163,7 +157,7 @@ public class PublisherIntegrationTest {
     setH2oServerExpectedCalls();
 
     // when
-    publisher.getScoringEngineJar(testDownloadRequest);
+    publisher.getScoringEngineJar(testH2oCredentials, testModelName);
     
     //then
     h2oServerMock.verify();

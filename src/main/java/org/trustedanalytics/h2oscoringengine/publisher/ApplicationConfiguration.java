@@ -28,6 +28,7 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.web.client.RestTemplate;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
+import org.trustedanalytics.h2oscoringengine.publisher.restapi.validation.DownloadRequestValidationRules;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -68,5 +69,10 @@ public class ApplicationConfiguration {
   @ConfigurationProperties("publisher.applicationBroker")
   public BasicAuthServerCredentials appBroker() {
     return new BasicAuthServerCredentials();
+  }
+  
+  @Bean
+  public DownloadRequestValidationRules downloadRequestValidationRules() {
+    return new DownloadRequestValidationRules();
   }
 }

@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>h2o-scoring-engine-publisher</artifactId>
-	<version>0.4.17</version>
+	<version>0.4.18</version>
 	<name>h2o-scoring-engine-publisher</name>
 
 	<properties>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.trustedanalytics</groupId>
 			<artifactId>h2o-scoring-engine-base</artifactId>
-			<version>0.5.0</version>
+			<version>0.5.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -62,7 +62,12 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>4.2.3.RELEASE</version>
+			<version>4.2.6.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>1.5.0</version>
 		</dependency>
 	</dependencies>
 	<build>

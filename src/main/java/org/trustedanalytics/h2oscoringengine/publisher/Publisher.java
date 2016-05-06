@@ -21,7 +21,6 @@ import org.trustedanalytics.h2oscoringengine.publisher.filesystem.FsDirectoryOpe
 import org.trustedanalytics.h2oscoringengine.publisher.filesystem.PublisherWorkingDirectory;
 import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
 import org.trustedanalytics.h2oscoringengine.publisher.http.FilesDownloader;
-import org.trustedanalytics.h2oscoringengine.publisher.restapi.DownloadRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.restapi.PublishRequest;
 import org.trustedanalytics.h2oscoringengine.publisher.steps.AppRecordCreatingStep;
 import org.trustedanalytics.h2oscoringengine.publisher.steps.CheckingIfAppExistsStep;
@@ -66,10 +65,10 @@ public class Publisher {
     publishToMarketplace(scoringEngineJar, appName, technicalSpaceGuid, request.getOrgGuid());
   }
 
-  public Path getScoringEngineJar(DownloadRequest request) throws EngineBuildingException {
-    return buildScoringEngineJar(
-        new FilesDownloader(request.getH2oCredentials(), h2oServerRestTemplate),
-        request.getModelName());
+  public Path getScoringEngineJar(BasicAuthServerCredentials h2oCredentials, String modelName)
+      throws EngineBuildingException {
+    return buildScoringEngineJar(new FilesDownloader(h2oCredentials, h2oServerRestTemplate),
+        modelName);
   }
 
   private Path buildScoringEngineJar(FilesDownloader h2oFilesDownloader, String modelName)

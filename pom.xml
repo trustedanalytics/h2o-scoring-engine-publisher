@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>h2o-scoring-engine-publisher</artifactId>
-	<version>0.4.16</version>
+	<version>0.4.17</version>
 	<name>h2o-scoring-engine-publisher</name>
 
 	<properties>

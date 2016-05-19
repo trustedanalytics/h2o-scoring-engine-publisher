@@ -13,20 +13,33 @@
  */
 package org.trustedanalytics.h2oscoringengine.publisher.restapi;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.trustedanalytics.h2oscoringengine.publisher.EngineBuildingException;
 import org.trustedanalytics.h2oscoringengine.publisher.EnginePublicationException;
 import org.trustedanalytics.h2oscoringengine.publisher.Publisher;
+import org.trustedanalytics.h2oscoringengine.publisher.http.BasicAuthServerCredentials;
+import org.trustedanalytics.h2oscoringengine.publisher.restapi.validation.DownloadRequestValidationRule;
+import org.trustedanalytics.h2oscoringengine.publisher.restapi.validation.DownloadRequestValidationRules;
+import org.trustedanalytics.h2oscoringengine.publisher.restapi.validation.ValidationException;
+
 
 @RestController
 public class PublisherController {
@@ -34,26 +47,76 @@ public class PublisherController {
   private static final Logger LOGGER = LoggerFactory.getLogger(PublisherController.class);
 
   private final Publisher publisher;
+  private final List<DownloadRequestValidationRule> validationRules;
 
   @Autowired
-  public PublisherController(Publisher publisher) {
+  public PublisherController(Publisher publisher,
+      DownloadRequestValidationRules downloadRequestValidationRules) {
     this.publisher = publisher;
+    this.validationRules = downloadRequestValidationRules.get();
   }
 
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
-      value = "/rest/engine")
+      value = "/rest/h2o/engines")
   public void publish(@Valid @RequestBody PublishRequest publishRequest)
       throws EnginePublicationException, EngineBuildingException {
     LOGGER.info("Got publish request: " + publishRequest);
     publisher.publish(publishRequest);
   }
 
-  @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "/rest/downloads", produces = "application/java-archive")
+  @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded",
+      value = "/rest/h2o/engines/{modelName}/downloads", produces = "application/java-archive")
   @ResponseBody
+  public FileSystemResource downloadEngine(
+      @Valid @RequestBody MultiValueMap<String, String> request, @PathVariable String modelName)
+      throws EngineBuildingException, ValidationException {
+
+    LOGGER.info("Got download request: " + request + " modelName:" + modelName);
+    validationRules.forEach(rule -> rule.validate(request));
+
+    BasicAuthServerCredentials h2oServerCredentials = new BasicAuthServerCredentials(
+        request.get("host").get(0), request.get("username").get(0), request.get("password").get(0));
+
+    return new FileSystemResource(
+        publisher.getScoringEngineJar(h2oServerCredentials, modelName).toFile());
+  }
+
+  @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
+      value = "/rest/engine")
+  @Deprecated
+  public void publish_old_endpoint(@Valid @RequestBody PublishRequest publishRequest)
+      throws EnginePublicationException, EngineBuildingException {
+    LOGGER.info("Got publish request: " + publishRequest);
+    publisher.publish(publishRequest);
+  }
+
+  @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
+      value = "/rest/downloads", produces = "application/java-archive")
+  @ResponseBody
+  @Deprecated
   public FileSystemResource downloadEngine(@Valid @RequestBody DownloadRequest downloadRequest)
       throws EngineBuildingException {
     LOGGER.info("Got download request: " + downloadRequest);
-    return new FileSystemResource(publisher.getScoringEngineJar(downloadRequest).toFile());
+    return new FileSystemResource(publisher
+        .getScoringEngineJar(downloadRequest.getH2oCredentials(), downloadRequest.getModelName())
+        .toFile());
+  }
+
+  @ExceptionHandler(ValidationException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public String handleIllegalArgumentException(ValidationException e,
+      HttpServletResponse response) {
+    LOGGER.error("Invalid request - returning HTTP 400 response. Reason: ", e);
+    return e.getMessage();
+  }
+
+  @ExceptionHandler({EngineBuildingException.class, EnginePublicationException.class})
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  @ResponseBody
+  public String handleEngineBuildingException(Exception e, HttpServletResponse response) {
+    LOGGER.error("Problem while building/publishing scoring engine: ", e);
+    return e.getMessage();
   }
 
 }

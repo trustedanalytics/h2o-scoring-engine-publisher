@@ -17,5 +17,5 @@ import org.springframework.util.MultiValueMap;
 
 public interface DownloadRequestValidationRule {
   
-  void validate(MultiValueMap<String, String> request) throws ValidationException;
+  void validate(MultiValueMap<String, String> request);
 }

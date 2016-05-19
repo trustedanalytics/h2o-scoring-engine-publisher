@@ -107,7 +107,7 @@ public class PublisherControllerTest {
     // when
     ValidationException testException = new ValidationException(new Exception(testExceptionMesage));
     String message =
-        controller.handleIllegalArgumentException(testException, mock(HttpServletResponse.class));
+        controller.handleIllegalArgumentException(testException);
 
     // then
     assertThat(message, is(equalTo(testException.getMessage())));
@@ -125,7 +125,7 @@ public class PublisherControllerTest {
     when(publisherMock.getScoringEngineJar(any(), any())).thenThrow(testException);
 
     String message =
-        controller.handleEngineBuildingException(testException, mock(HttpServletResponse.class));
+        controller.handleEngineBuildingException(testException);
 
     // then
     assertThat(message, is(equalTo(testException.getMessage())));
@@ -153,7 +153,7 @@ public class PublisherControllerTest {
         new PublisherController(publisherMock, new DownloadRequestValidationRules());
 
     // when
-    controller.publish_old_endpoint(testPublishRequest);
+    controller.publishOldEndpoint(testPublishRequest);
 
     // then
     verify(publisherMock).publish(testPublishRequest);

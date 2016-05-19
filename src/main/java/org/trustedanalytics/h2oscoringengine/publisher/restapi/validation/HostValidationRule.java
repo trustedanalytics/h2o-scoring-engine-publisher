@@ -33,7 +33,7 @@ public class HostValidationRule implements DownloadRequestValidationRule {
    * org.springframework.util.MultiValueMap)
    */
   @Override
-  public void validate(MultiValueMap<String, String> request) throws ValidationException {
+  public void validate(MultiValueMap<String, String> request) {
     try {
       formDataValidator.validateField(request, HOST_KEY);
       UrlValidator urlValidator = new UrlValidator();

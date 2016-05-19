@@ -15,7 +15,6 @@ package org.trustedanalytics.h2oscoringengine.publisher.restapi;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -81,15 +80,21 @@ public class PublisherController {
         publisher.getScoringEngineJar(h2oServerCredentials, modelName).toFile());
   }
 
+  /**
+   * @deprecated This API endpoint will be removed.  
+   */
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
       value = "/rest/engine")
   @Deprecated
-  public void publish_old_endpoint(@Valid @RequestBody PublishRequest publishRequest)
+  public void publishOldEndpoint(@Valid @RequestBody PublishRequest publishRequest)
       throws EnginePublicationException, EngineBuildingException {
     LOGGER.info("Got publish request: " + publishRequest);
     publisher.publish(publishRequest);
   }
 
+  /**
+   * @deprecated This API endpoint will be removed.  
+   */
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
       value = "/rest/downloads", produces = "application/java-archive")
   @ResponseBody
@@ -105,8 +110,7 @@ public class PublisherController {
   @ExceptionHandler(ValidationException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   @ResponseBody
-  public String handleIllegalArgumentException(ValidationException e,
-      HttpServletResponse response) {
+  public String handleIllegalArgumentException(ValidationException e) {
     LOGGER.error("Invalid request - returning HTTP 400 response. Reason: ", e);
     return e.getMessage();
   }
@@ -114,7 +118,7 @@ public class PublisherController {
   @ExceptionHandler({EngineBuildingException.class, EnginePublicationException.class})
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
   @ResponseBody
-  public String handleEngineBuildingException(Exception e, HttpServletResponse response) {
+  public String handleEngineBuildingException(Exception e) {
     LOGGER.error("Problem while building/publishing scoring engine: ", e);
     return e.getMessage();
   }

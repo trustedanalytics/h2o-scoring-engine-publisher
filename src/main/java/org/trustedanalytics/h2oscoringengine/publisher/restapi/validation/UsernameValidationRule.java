@@ -32,7 +32,7 @@ public class UsernameValidationRule implements DownloadRequestValidationRule {
    * org.springframework.util.MultiValueMap)
    */
   @Override
-  public void validate(MultiValueMap<String, String> request) throws ValidationException {
+  public void validate(MultiValueMap<String, String> request) {
     try {
       formDataValidator.validateField(request, USERNAME_KEY);
     } catch (IllegalArgumentException e) {

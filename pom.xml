@@ -14,7 +14,7 @@
 	<properties>
 		<start-class>org.trustedanalytics.h2oscoringengine.publisher.Application</start-class>
 		<jacoco-measurement-instructions>0.900</jacoco-measurement-instructions>
-		<jacoco-measurement-branches>0.800</jacoco-measurement-branches>
+		<jacoco-measurement-branches>0.780</jacoco-measurement-branches>
 		<jacoco-measurement-lines>0.900</jacoco-measurement-lines>
 		<jacoco-measurement-classes>0.850</jacoco-measurement-classes>
 	</properties>
@@ -68,6 +68,11 @@
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
 			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.5.0</version>
 		</dependency>
 	</dependencies>
 	<build>

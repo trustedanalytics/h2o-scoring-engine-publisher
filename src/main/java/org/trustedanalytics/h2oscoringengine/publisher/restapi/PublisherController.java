@@ -13,10 +13,9 @@
  */
 package org.trustedanalytics.h2oscoringengine.publisher.restapi;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,9 @@ import org.trustedanalytics.h2oscoringengine.publisher.restapi.validation.Downlo
 import org.trustedanalytics.h2oscoringengine.publisher.restapi.validation.DownloadRequestValidationRules;
 import org.trustedanalytics.h2oscoringengine.publisher.restapi.validation.ValidationException;
 
+import javax.validation.Valid;
+import java.util.List;
+
 
 @RestController
 public class PublisherController {
@@ -55,6 +57,14 @@ public class PublisherController {
     this.validationRules = downloadRequestValidationRules.get();
   }
 
+  @ApiOperation(
+          value = "Publishes model as a service offering in Marketplace",
+          notes = "Privilege level: Any consumer of this endpoint must have a valid access token"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "OK"),
+          @ApiResponse(code = 500, message = "Internal server error, e.g. error building or publishing model")
+  })
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
       value = "/rest/h2o/engines")
   public void publish(@Valid @RequestBody PublishRequest publishRequest)
@@ -63,6 +73,15 @@ public class PublisherController {
     publisher.publish(publishRequest);
   }
 
+  @ApiOperation(
+          value = "Exposes H2O scoring engine model for download as JAR file",
+          notes = "Privilege level: Any consumer of this endpoint must have a valid access token"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "OK", response = FileSystemResource.class),
+          @ApiResponse(code = 400, message = "Request was malformed"),
+          @ApiResponse(code = 500, message = "Internal server error, e.g. error building or publishing model")
+  })
   @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded",
       value = "/rest/h2o/engines/{modelName}/downloads", produces = "application/java-archive")
   @ResponseBody
@@ -83,6 +102,14 @@ public class PublisherController {
   /**
    * @deprecated This API endpoint will be removed.  
    */
+  @ApiOperation(
+          value = "Deprecated route: Publishes model as a service offering in Marketplace",
+          notes = "Privilege level: Any consumer of this endpoint must have a valid access token"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "OK"),
+          @ApiResponse(code = 500, message = "Internal server error, e.g. error building or publishing model")
+  })
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
       value = "/rest/engine")
   @Deprecated
@@ -95,6 +122,14 @@ public class PublisherController {
   /**
    * @deprecated This API endpoint will be removed.  
    */
+  @ApiOperation(
+          value = "Deprecated route: Exposes H2O scoring engine model for download as JAR file",
+          notes = "Privilege level: Any consumer of this endpoint must have a valid access token"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "OK"),
+          @ApiResponse(code = 500, message = "Internal server error, e.g. error building model")
+  })
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json",
       value = "/rest/downloads", produces = "application/java-archive")
   @ResponseBody

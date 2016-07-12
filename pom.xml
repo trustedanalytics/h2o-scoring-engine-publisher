@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>h2o-scoring-engine-publisher</artifactId>
-	<version>0.4.22</version>
+	<version>0.4.23</version>
 	<name>h2o-scoring-engine-publisher</name>
 
 	<properties>
@@ -63,6 +63,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>4.2.6.RELEASE</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-validator</groupId>
@@ -72,7 +73,7 @@
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>2.5.0</version>
+			<version>2.3.1</version>
 		</dependency>
 	</dependencies>
 	<build>
